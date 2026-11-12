@@ -5,7 +5,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
+    { name: 'Home', href: '#hero' },
     { name: 'About', href: '#about' },
     { name: 'Projects', href: '#projects' },
     { name: 'Skills', href: '#skills' },
@@ -22,25 +22,25 @@ const Navbar = () => {
               Prasun.K.B
             </span>
           </div>
-          
+
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-phosphor/80 hover:text-target transition-colors px-3 py-2 rounded-none text-sm font-medium font-mono"
+                  className="text-phosphor hover:text-sensor transition-colors px-3 py-2 rounded-none text-sm font-medium font-mono"
                 >
                   {link.name}
                 </a>
               ))}
             </div>
           </div>
-          
+
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-none text-phosphor/60 hover:text-white hover:target-box focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-none text-phosphor hover:text-sensor hover:target-box focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -57,7 +57,7 @@ const Navbar = () => {
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-phosphor/80 hover:text-target block px-3 py-2 rounded-none text-base font-medium font-mono"
+                className="text-phosphor hover:text-sensor block px-3 py-2 rounded-none text-base font-medium font-mono"
               >
                 {link.name}
               </a>

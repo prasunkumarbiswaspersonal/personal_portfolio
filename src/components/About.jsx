@@ -24,16 +24,16 @@ const About = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-6 text-phosphor/60 text-lg"
+            className="space-y-6 text-phosphor/90 text-lg leading-relaxed"
           >
             <p>
-              I am a multidisciplinary engineer studying at <span className="text-white">Centurion University of Technology and Management (CUTM)</span>. 
+              I am a multidisciplinary engineer studying at <span className="text-sensor font-semibold">Centurion University of Technology and Management (CUTM)</span>. 
               My journey began with a fascination for flight and evolved into a deep dive into the systems that make autonomous and intelligent machines possible.
             </p>
             <p>
               My core philosophy centers around building from the ground up. Whether it's designing the physical airframe of a drone, soldering the flight controller, or deploying a local Large Language Model to process telemetry data, I thrive at the intersection of hardware and software.
             </p>
-            <p>
+            <p className="text-white font-medium">
               I don't just write code; I engineer systems that interact with the physical world.
             </p>
           </motion.div>
@@ -48,17 +48,17 @@ const About = () => {
             <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors">
               <Plane className="text-target h-8 w-8 mb-4" />
               <h3 className="text-sm md:text-base font-bold text-white mb-2 break-words">Aerospace</h3>
-              <p className="text-sm text-phosphor/60">Flight mechanics, 3D CAD modeling, and CFD simulations.</p>
+              <p className="text-sm text-phosphor/80">Flight mechanics, 3D CAD modeling, and CFD simulations.</p>
             </div>
             <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors">
               <Cpu className="text-target h-8 w-8 mb-4" />
               <h3 className="text-sm md:text-base font-bold text-white mb-2 break-words">Hardware</h3>
-              <p className="text-sm text-phosphor/60">Embedded systems, custom drone builds, and circuit design.</p>
+              <p className="text-sm text-phosphor/80">Embedded systems, custom drone builds, and circuit design.</p>
             </div>
             <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors sm:col-span-2">
               <Code2 className="text-target h-8 w-8 mb-4" />
               <h3 className="text-sm md:text-base font-bold text-white mb-2 break-words">Software & AI</h3>
-              <p className="text-sm text-phosphor/60">Full-stack web development and local LLM deployment (Ollama, Llama 3) for edge computing.</p>
+              <p className="text-sm text-phosphor/80">Full-stack web development and local LLM deployment (Ollama, Llama 3) for edge computing.</p>
             </div>
           </motion.div>
         </div>

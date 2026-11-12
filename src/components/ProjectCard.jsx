@@ -36,7 +36,7 @@ const ProjectCard = ({ project, onClick, index }) => {
           <ArrowUpRight className="w-4 h-4 text-sensor/40 group-hover:text-target transition-colors flex-shrink-0 mt-1" />
         </div>
         
-        <p className="text-project/60 text-sm mb-6 leading-relaxed flex-grow">
+        <p className="text-phosphor/90 text-sm mb-6 leading-relaxed flex-grow">
           {project.description}
         </p>
         
@@ -44,7 +44,7 @@ const ProjectCard = ({ project, onClick, index }) => {
           {/* Technical Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
             {project.tags.map(tag => (
-              <span key={tag} className="px-2 py-1 text-[10px] border border-sensor/20 text-sensor/60 font-mono uppercase tracking-tighter">
+              <span key={tag} className="px-2 py-1 text-[11px] border border-sensor/30 text-sensor bg-sensor/5 font-mono uppercase tracking-tight">
                 {tag.replace(/\s+/g, '_')}
               </span>
             ))}
@@ -61,7 +61,7 @@ const ProjectCard = ({ project, onClick, index }) => {
                   href={project.github} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-project/40 hover:text-sensor transition-colors"
+                  className="text-slate-300 hover:text-sensor transition-colors"
                   onClick={(e) => e.stopPropagation()}
                   aria-label="GitHub Repository"
                 >
@@ -73,7 +73,7 @@ const ProjectCard = ({ project, onClick, index }) => {
                   href={project.link} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-project/40 hover:text-sensor transition-colors"
+                  className="text-slate-300 hover:text-sensor transition-colors"
                   onClick={(e) => e.stopPropagation()}
                   aria-label="Live Project"
                 >

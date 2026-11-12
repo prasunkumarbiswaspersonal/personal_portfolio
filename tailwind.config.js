@@ -9,11 +9,11 @@ export default {
       colors: {
         void: '#000000',
         optical: '#050505',
-        phosphor: '#c084fc', // Cosmic Purple
-        project: '#E0E0E0', // Original white/grey for Project section
-        target: '#FF003C',
-        radar: '#FFB000',
-        sensor: '#00E5FF'
+        phosphor: '#E2E8F0', // Crisp Aerospace HUD White / Silver
+        project: '#F8FAFC',  // Clean High-Contrast Display White
+        target: '#FF003C',   // Aerospace Target Red
+        radar: '#FFB000',    // Telemetry Amber
+        sensor: '#00E5FF'    // Luminous HUD Cyan
       },
       fontFamily: {
         sans: ['Share Tech Mono', 'monospace'],

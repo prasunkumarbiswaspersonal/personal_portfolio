@@ -41,7 +41,7 @@ const Skills = () => {
                 {skillGroup.items.map((item) => (
                   <span 
                     key={item}
-                    className="px-2 py-1 bg-transparent text-target font-mono text-[10px] md:text-xs rounded-none border border-sensor/20"
+                    className="px-2.5 py-1 bg-void/50 text-sensor font-mono text-xs rounded-none border border-sensor/30 hover:border-target hover:text-white transition-colors"
                   >
                     {item}
                   </span>

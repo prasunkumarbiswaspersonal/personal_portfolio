@@ -56,7 +56,7 @@ const Contact = () => {
           <h3 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Get In Touch
           </h3>
-          <p className="text-lg text-phosphor/60 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg text-phosphor/90 mb-10 max-w-2xl mx-auto leading-relaxed">
             Whether you have a question about my projects, want to discuss a potential collaboration, or just want to say hi, my inbox is always open. 
           </p>
         </motion.div>
@@ -74,13 +74,13 @@ const Contact = () => {
                 <Send className="h-8 w-8 text-target" />
               </div>
               <h4 className="text-2xl font-bold text-white mb-2">Message Sent!</h4>
-              <p className="text-phosphor/60">Thanks for reaching out. I'll get back to you soon.</p>
+              <p className="text-phosphor/90">Thanks for reaching out. I'll get back to you soon.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-mono text-phosphor/60 mb-2">
+                  <label htmlFor="name" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
                     NAME
                   </label>
                   <input
@@ -90,12 +90,12 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-transparent border border-sensor/20 rounded-none text-white font-mono focus:border-target focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
                     placeholder="Your Name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-mono text-phosphor/60 mb-2">
+                  <label htmlFor="email" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
                     EMAIL
                   </label>
                   <input
@@ -105,14 +105,14 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-transparent border border-sensor/20 rounded-none text-white font-mono focus:border-target focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
                     placeholder="your.email@example.com"
                   />
                 </div>
               </div>
               
               <div>
-                <label htmlFor="subject" className="block text-sm font-mono text-phosphor/60 mb-2">
+                <label htmlFor="subject" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
                   SUBJECT
                 </label>
                 <input
@@ -122,13 +122,13 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-transparent border border-sensor/20 rounded-none text-white font-mono focus:border-target focus:outline-none transition-colors"
+                  className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
                   placeholder="Project Inquiry"
                 />
               </div>
               
               <div>
-                <label htmlFor="message" className="block text-sm font-mono text-phosphor/60 mb-2">
+                <label htmlFor="message" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
                   MESSAGE
                 </label>
                 <textarea
@@ -138,7 +138,7 @@ const Contact = () => {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-3 bg-transparent border border-sensor/20 rounded-none text-white font-mono focus:border-target focus:outline-none transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors resize-none placeholder:text-slate-500"
                   placeholder="Your message here..."
                 />
               </div>
@@ -147,11 +147,11 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center justify-center px-8 py-4 border border-sensor text-lg font-medium rounded-none text-target bg-transparent hover:bg-target/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center justify-center px-8 py-4 border border-sensor text-lg font-medium rounded-none text-sensor bg-transparent hover:bg-sensor/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed tracking-wider"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">
-                      <span className="animate-spin h-5 w-5 mr-2 border-2 border-target border-t-transparent rounded-none"></span>
+                      <span className="animate-spin h-5 w-5 mr-2 border-2 border-sensor border-t-transparent rounded-none"></span>
                       Sending...
                     </span>
                   ) : (
@@ -175,7 +175,7 @@ const Contact = () => {
         >
           <a
             href="mailto:prasun.oct27@gmail.com"
-            className="inline-flex items-center justify-center px-8 py-4 border border-sensor text-lg font-medium rounded-none text-target bg-transparent hover:bg-target/10 transition-colors"
+            className="inline-flex items-center justify-center px-8 py-4 border border-sensor text-lg font-medium rounded-none text-sensor bg-transparent hover:bg-sensor/10 transition-colors tracking-wider"
           >
             <Mail className="mr-2 h-5 w-5" />
             Say Hello

@@ -12,17 +12,17 @@ const Footer = () => {
             <span className="font-mono text-lg font-bold text-gradient">
               Prasun Kumar Biswas
             </span>
-            <p className="text-sm text-phosphor/60 mt-1">
+            <p className="text-sm text-phosphor/80 mt-1">
               Building at the intersection of hardware, aerospace, and AI.
             </p>
           </div>
           
           <div className="flex space-x-6">
             <a
-              href="https://github.com"
+              href="https://github.com/prasunkumarbiswaspersonal"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-phosphor/60 hover:text-target transition-colors"
+              className="text-phosphor/80 hover:text-sensor transition-colors"
             >
               <span className="sr-only">GitHub</span>
               <FaGithub className="h-6 w-6" />
@@ -31,14 +31,14 @@ const Footer = () => {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-phosphor/60 hover:text-target transition-colors"
+              className="text-phosphor/80 hover:text-sensor transition-colors"
             >
               <span className="sr-only">LinkedIn</span>
               <FaLinkedin className="h-6 w-6" />
             </a>
             <a
               href="mailto:prasun.oct27@gmail.com"
-              className="text-phosphor/60 hover:text-target transition-colors"
+              className="text-phosphor/80 hover:text-sensor transition-colors"
             >
               <span className="sr-only">Email</span>
               <Mail className="h-6 w-6" />
@@ -47,7 +47,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-8 border-t border-sensor/20 pt-8 flex items-center justify-center">
-          <p className="text-sm text-phosphor/60 font-mono">
+          <p className="text-sm text-phosphor/70 font-mono">
             &copy; {currentYear} Prasun Kumar Biswas. All rights reserved.
           </p>
         </div>

@@ -121,8 +121,8 @@ const AeroLoader = () => {
             {/* Progress Bar */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-phosphor/60 font-mono text-sm">SYSTEM STATUS</span>
-                <span className="text-target font-mono text-sm">{Math.round(progress)}%</span>
+                <span className="text-phosphor font-mono text-sm font-medium">SYSTEM STATUS</span>
+                <span className="text-target font-mono text-sm font-bold">{Math.round(progress)}%</span>
               </div>
               <div className="w-full h-2 bg-surface/50 rounded-none overflow-hidden">
                 <motion.div
@@ -142,7 +142,7 @@ const AeroLoader = () => {
                   transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   className="w-4 h-4 border-2 border-target rounded-none"
                 />
-                <span className="font-mono text-phosphor/80 text-sm">{stage}</span>
+                <span className="font-mono text-phosphor text-sm font-medium">{stage}</span>
               </div>
             </div>
 
@@ -155,7 +155,7 @@ const AeroLoader = () => {
                 className="text-center p-3 bg-surface/20 rounded-none border border-sensor/20"
               >
                 <div className="text-target font-mono font-bold text-lg">9</div>
-                <div className="text-phosphor/40 font-mono text-xs">PROJECTS</div>
+                <div className="text-phosphor/80 font-mono text-xs">PROJECTS</div>
               </motion.div>
               
               <motion.div
@@ -165,7 +165,7 @@ const AeroLoader = () => {
                 className="text-center p-3 bg-surface/20 rounded-none border border-sensor/20"
               >
                 <div className="text-target font-mono font-bold text-lg">3</div>
-                <div className="text-phosphor/40 font-mono text-xs">CATEGORIES</div>
+                <div className="text-phosphor/80 font-mono text-xs">CATEGORIES</div>
               </motion.div>
               
               <motion.div
@@ -175,7 +175,7 @@ const AeroLoader = () => {
                 className="text-center p-3 bg-surface/20 rounded-none border border-sensor/20"
               >
                 <div className="text-target font-mono font-bold text-lg">100%</div>
-                <div className="text-phosphor/40 font-mono text-xs">OPTIMIZED</div>
+                <div className="text-phosphor/80 font-mono text-xs">OPTIMIZED</div>
               </motion.div>
             </div>
 
@@ -184,11 +184,11 @@ const AeroLoader = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="text-phosphor/60 font-mono text-sm text-center"
+              className="text-phosphor/90 font-mono text-sm text-center"
             >
               Initializing aerospace engineering portfolio...
               <br />
-              <span className="text-target/60">Preparing flight systems for takeoff.</span>
+              <span className="text-sensor font-medium">Preparing flight systems for takeoff.</span>
             </motion.p>
           </motion.div>
         </div>

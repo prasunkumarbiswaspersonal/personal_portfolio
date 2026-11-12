@@ -146,7 +146,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
         outcome: "Delivered a functional business management solution that streamlines inventory tracking and sales analytics, improving operational efficiency for small businesses."
       }
     };
-    
+
     return details[projectId] || {};
   };
 
@@ -177,58 +177,58 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
               >
                 <X className="h-5 w-5 text-project" />
               </button>
-              
+
               <div className="p-8">
                 <div className="mb-6">
                   <h2 className="text-3xl font-bold text-white mb-2">{details.title}</h2>
                   <h3 className="text-xl text-target font-mono mb-4">{details.subtitle}</h3>
-                  <p className="text-project/60 text-lg leading-relaxed mb-6">{details.description}</p>
+                  <p className="text-phosphor/90 text-lg leading-relaxed mb-6">{details.description}</p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div>
                     <h4 className="text-lg font-bold text-white mb-3">Project Overview</h4>
-                    <p className="text-project/60 leading-relaxed mb-4">{details.fullDescription}</p>
-                    
+                    <p className="text-phosphor/85 leading-relaxed mb-4">{details.fullDescription}</p>
+
                     <h4 className="text-lg font-bold text-white mb-3">Key Challenges</h4>
                     <ul className="space-y-2">
                       {details.challenges.map((challenge, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <span className="text-target mt-1">▸</span>
-                          <span className="text-project/60 text-sm">{challenge}</span>
+                          <span className="text-phosphor/85 text-sm">{challenge}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  
+
                   <div>
                     <h4 className="text-lg font-bold text-white mb-3">Technologies Used</h4>
                     <div className="flex flex-wrap gap-2 mb-6">
                       {details.technologies.map((tech, index) => (
-                        <span key={index} className="px-3 py-1 bg-transparent text-target font-mono text-xs rounded-none border border-sensor/20">
+                        <span key={index} className="px-3 py-1 bg-sensor/5 text-sensor font-mono text-xs rounded-none border border-sensor/30">
                           {tech}
                         </span>
                       ))}
                     </div>
-                    
+
                     <h4 className="text-lg font-bold text-white mb-3">Outcome</h4>
-                    <p className="text-project/60 leading-relaxed">{details.outcome}</p>
+                    <p className="text-phosphor/85 leading-relaxed">{details.outcome}</p>
                   </div>
                 </div>
-                
+
                 <div className="border-t border-sensor/20 pt-6">
                   <h4 className="text-lg font-bold text-white mb-4">Project Gallery</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {details.images.map((image, index) => (
                       <div key={index} className="aspect-video bg-surface/50 border border-sensor/20 rounded-none overflow-hidden">
                         <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-project/40 font-mono text-sm">Image Placeholder {index + 1}</span>
+                          <span className="text-sensor/60 font-mono text-sm">Image Placeholder {index + 1}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="border-t border-sensor/20 pt-6 mt-6 flex gap-4">
                   {project.github && (
                     <a
@@ -238,7 +238,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                       className="btn-hud inline-flex items-center gap-2"
                     >
                       <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.069 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.472 5.931.43.372.823 1.102.823 2.222v3.293c0 .316.192.694.801.576 4.765-1.587 8.208-6.085 8.208-11.386 0-6.627-5.373-12-12-12z"/>
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.069 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.472 5.931.43.372.823 1.102.823 2.222v3.293c0 .316.192.694.801.576 4.765-1.587 8.208-6.085 8.208-11.386 0-6.627-5.373-12-12-12z" />
                       </svg>
                       View Code
                     </a>
@@ -255,9 +255,9 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                     </a>
                   )}
                 </div>
-                
+
                 <div className="mt-6 pt-4 border-t border-sensor/20">
-                  <p className="text-xs text-project/40 font-mono">
+                  <p className="text-xs text-phosphor/70 font-mono">
                     Contact: <a href="mailto:prasun.oct27@gmail.com" className="text-target hover:underline">prasun.oct27@gmail.com</a>
                   </p>
                 </div>
