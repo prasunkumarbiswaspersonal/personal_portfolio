@@ -19,7 +19,7 @@ const Navbar = () => {
           <div className="flex-shrink-0 flex items-center gap-2">
             <Terminal className="text-target h-6 w-6" />
             <span className="font-mono text-xl font-bold text-gradient">
-              Prasun.K.B
+              0xPrasun
             </span>
           </div>
 

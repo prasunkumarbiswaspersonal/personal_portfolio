@@ -13,19 +13,26 @@ const Hero = () => {
           SYSTEM.INITIALIZE // PORTFOLIO_V2.0
         </motion.div>
 
-        <div className="relative w-full flex justify-center">
-
-
+        <div className="relative w-full flex flex-col items-center justify-center">
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="font-heading text-[clamp(1.5rem,7.5vw,5.5rem)] mb-6 md:mb-8 tracking-[0.1em] sm:tracking-[0.2em] text-sensor drop-shadow-[0_0_20px_rgba(0,229,255,0.3)] inline-grid grid-cols-[1fr_auto_1fr] items-center"
+            className="font-heading text-[clamp(2.2rem,8.5vw,6rem)] mb-2 md:mb-3 tracking-[0.08em] sm:tracking-[0.15em] text-sensor drop-shadow-[0_0_25px_rgba(0,229,255,0.35)]"
           >
-            <span className="text-right">PRASUN</span>
-            <span className="text-target px-1 sm:px-2 md:px-4">_</span>
-            <span className="text-left">KUMAR</span>
+            <span className="text-target">0x</span>PRASUN
           </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mb-6 md:mb-8 flex items-center gap-2 sm:gap-3 text-phosphor/90 font-mono tracking-[0.2em] sm:tracking-[0.35em] text-[clamp(0.85rem,2.5vw,1.35rem)] uppercase font-semibold"
+          >
+            <span className="text-target font-bold">[</span>
+            <span>PRASUN KUMAR BISWAS</span>
+            <span className="text-target font-bold">]</span>
+          </motion.div>
         </div>
 
         <motion.p
