@@ -18,9 +18,9 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="font-heading text-[clamp(2.2rem,8.5vw,6rem)] mb-2 md:mb-3 tracking-[0.08em] sm:tracking-[0.15em] text-sensor drop-shadow-[0_0_25px_rgba(0,229,255,0.35)]"
+            className="font-powershell normal-case font-bold text-[clamp(2.5rem,9vw,6.5rem)] mb-2 md:mb-3 tracking-normal text-sensor drop-shadow-[0_0_25px_rgba(0,229,255,0.4)]"
           >
-            <span className="text-target">0x</span>PRASUN
+            <span className="text-target">0x</span>Prasun
           </motion.h1>
 
           <motion.div
@@ -51,7 +51,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8"
+          className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-12"
         >
           <a href="#projects" className="btn-hud text-base md:text-lg px-10 py-4 group min-w-[220px]">
             <span className="group-hover:tracking-[0.25em] transition-all duration-500">ENGAGE OPTICS</span>
@@ -61,6 +61,47 @@ const Hero = () => {
             className="btn-hud text-base md:text-lg px-10 py-4 !border-sensor/40 !text-phosphor group min-w-[220px] hover:!border-sensor hover:!text-sensor"
           >
             <span className="group-hover:tracking-[0.1em] transition-all duration-500">SECURE_CV.PDF</span>
+          </a>
+        </motion.div>
+
+        {/* Scroll Down Indicator Animation */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.2 }}
+          className="flex flex-col items-center"
+        >
+          <a
+            href="#about"
+            className="flex flex-col items-center gap-2 group cursor-pointer"
+            aria-label="Scroll to About section"
+          >
+            <span className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-sensor/60 group-hover:text-sensor uppercase transition-colors">
+              SCROLL // TO ENGAGE
+            </span>
+            <div className="w-5 h-9 border-2 border-sensor/40 group-hover:border-sensor rounded-full flex justify-center p-1 transition-colors">
+              <motion.div
+                animate={{
+                  y: [0, 14, 0],
+                  opacity: [0.3, 1, 0.3],
+                }}
+                transition={{
+                  duration: 1.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-1 h-2 bg-target rounded-full"
+              />
+            </div>
+            <motion.div
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="text-sensor/50 group-hover:text-sensor"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
           </a>
         </motion.div>
       </div>
