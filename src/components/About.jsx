@@ -12,10 +12,10 @@ const About = () => {
           transition={{ duration: 0.5 }}
           className="mb-16"
         >
-          <h2 className="text-3xl font-bold font-mono inline-flex items-center">
-            <span className="text-target mr-2">01.</span> About Me
+          <h2 className="text-4xl md:text-5xl font-bold font-mono inline-flex items-center">
+            <span className="text-target mr-3">01.</span> About Me
           </h2>
-          <div className="h-px bg-gray-800 w-full max-w-xs mt-4"></div>
+          <div className="h-px bg-gray-800 w-full max-w-sm mt-4"></div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -24,7 +24,7 @@ const About = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-6 text-phosphor/90 text-lg leading-relaxed"
+            className="space-y-6 text-phosphor/95 text-xl md:text-2xl leading-relaxed"
           >
             <p>
               I am a multidisciplinary engineer studying at <span className="text-sensor font-semibold">Centurion University of Technology and Management (CUTM)</span>. 
@@ -46,19 +46,19 @@ const About = () => {
             className="grid grid-cols-1 sm:grid-cols-2 gap-6"
           >
             <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors">
-              <Plane className="text-target h-8 w-8 mb-4" />
-              <h3 className="text-sm md:text-base font-bold text-white mb-2 break-words">Aerospace</h3>
-              <p className="text-sm text-phosphor/80">Flight mechanics, 3D CAD modeling, and CFD simulations.</p>
+              <Plane className="text-target h-10 w-10 mb-4" />
+              <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">Aerospace</h3>
+              <p className="text-base text-phosphor/90">Flight mechanics, 3D CAD modeling, and CFD simulations.</p>
             </div>
             <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors">
-              <Cpu className="text-target h-8 w-8 mb-4" />
-              <h3 className="text-sm md:text-base font-bold text-white mb-2 break-words">Hardware</h3>
-              <p className="text-sm text-phosphor/80">Embedded systems, custom drone builds, and circuit design.</p>
+              <Cpu className="text-target h-10 w-10 mb-4" />
+              <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">Hardware</h3>
+              <p className="text-base text-phosphor/90">Embedded systems, custom drone builds, and circuit design.</p>
             </div>
             <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors sm:col-span-2">
-              <Code2 className="text-target h-8 w-8 mb-4" />
-              <h3 className="text-sm md:text-base font-bold text-white mb-2 break-words">Software & AI</h3>
-              <p className="text-sm text-phosphor/80">Full-stack web development and local LLM deployment (Ollama, Llama 3) for edge computing.</p>
+              <Code2 className="text-target h-10 w-10 mb-4" />
+              <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">Software & AI</h3>
+              <p className="text-base text-phosphor/90">Full-stack web development and local LLM deployment (Ollama, Llama 3) for edge computing.</p>
             </div>
           </motion.div>
         </div>

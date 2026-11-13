@@ -1,12 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Share+Tech+Mono&display=swap');
 
+@font-face {
+  font-family: 'OriginTech';
+  src: url('/fonts/OriginTech.otf') format('opentype'),
+       url('/fonts/OriginTech.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+  }
+
   body {
-    @apply font-sans antialiased text-phosphor bg-void min-h-screen cursor-crosshair;
+    @apply font-sans antialiased text-phosphor bg-void min-h-screen cursor-crosshair text-base md:text-lg;
   }
   
   h1, h2, h3, h4, h5, h6 {

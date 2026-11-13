@@ -18,10 +18,10 @@ const Skills = () => {
           transition={{ duration: 0.5 }}
           className="mb-16"
         >
-          <h2 className="text-3xl font-bold font-mono inline-flex items-center">
-            <span className="text-target mr-2">02.</span> Skills Arsenal
+          <h2 className="text-4xl md:text-5xl font-bold font-mono inline-flex items-center">
+            <span className="text-target mr-3">02.</span> Skills Arsenal
           </h2>
-          <div className="h-px bg-gray-800 w-full max-w-xs mt-4"></div>
+          <div className="h-px bg-gray-800 w-full max-w-sm mt-4"></div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -34,14 +34,14 @@ const Skills = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="target-box p-6 rounded-none border border-sensor/20 hover:border-sensor/30 transition-colors"
             >
-              <h3 className="text-sm md:text-base font-bold text-white mb-4 border-b border-sensor/20 pb-2 break-words">
+              <h3 className="text-base md:text-lg font-bold text-white mb-4 border-b border-sensor/20 pb-2 break-words tracking-wide">
                 {skillGroup.category}
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {skillGroup.items.map((item) => (
                   <span 
                     key={item}
-                    className="px-2.5 py-1 bg-void/50 text-sensor font-mono text-xs rounded-none border border-sensor/30 hover:border-target hover:text-white transition-colors"
+                    className="px-3 py-1.5 bg-void/50 text-sensor font-mono text-sm rounded-none border border-sensor/30 hover:border-target hover:text-white transition-colors font-medium tracking-tight"
                   >
                     {item}
                   </span>

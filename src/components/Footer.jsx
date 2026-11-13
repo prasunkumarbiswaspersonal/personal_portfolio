@@ -5,14 +5,14 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="target-box border-t border-sensor/20 py-8">
+    <footer className="target-box border-t border-sensor/20 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <span className="font-mono text-lg font-bold text-gradient">
+          <div className="mb-6 md:mb-0">
+            <span className="font-mono text-2xl font-bold text-gradient">
               Prasun Kumar Biswas
             </span>
-            <p className="text-sm text-phosphor/80 mt-1">
+            <p className="text-base text-phosphor/90 mt-1.5 font-medium">
               Building at the intersection of hardware, aerospace, and AI.
             </p>
           </div>
@@ -25,7 +25,7 @@ const Footer = () => {
               className="text-phosphor/80 hover:text-sensor transition-colors"
             >
               <span className="sr-only">GitHub</span>
-              <FaGithub className="h-6 w-6" />
+              <FaGithub className="h-7 w-7" />
             </a>
             <a
               href="https://linkedin.com"
@@ -34,20 +34,20 @@ const Footer = () => {
               className="text-phosphor/80 hover:text-sensor transition-colors"
             >
               <span className="sr-only">LinkedIn</span>
-              <FaLinkedin className="h-6 w-6" />
+              <FaLinkedin className="h-7 w-7" />
             </a>
             <a
               href="mailto:prasun.oct27@gmail.com"
               className="text-phosphor/80 hover:text-sensor transition-colors"
             >
               <span className="sr-only">Email</span>
-              <Mail className="h-6 w-6" />
+              <Mail className="h-7 w-7" />
             </a>
           </div>
         </div>
         
         <div className="mt-8 border-t border-sensor/20 pt-8 flex items-center justify-center">
-          <p className="text-sm text-phosphor/70 font-mono">
+          <p className="text-base text-phosphor/80 font-mono">
             &copy; {currentYear} Prasun Kumar Biswas. All rights reserved.
           </p>
         </div>

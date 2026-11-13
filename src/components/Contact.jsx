@@ -50,13 +50,13 @@ const Contact = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold font-mono mb-4 text-target">
+          <h2 className="text-3xl md:text-4xl font-bold font-mono mb-4 text-target">
             04. What's Next?
           </h2>
-          <h3 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h3 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Get In Touch
           </h3>
-          <p className="text-lg text-phosphor/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-phosphor/95 mb-10 max-w-2xl mx-auto leading-relaxed">
             Whether you have a question about my projects, want to discuss a potential collaboration, or just want to say hi, my inbox is always open. 
           </p>
         </motion.div>
@@ -66,21 +66,21 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="target-box p-8 rounded-none border border-sensor/20"
+          className="target-box p-8 md:p-12 rounded-none border border-sensor/20"
         >
           {isSubmitted ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-target/20 rounded-none flex items-center justify-center mx-auto mb-4">
-                <Send className="h-8 w-8 text-target" />
+              <div className="w-20 h-20 bg-target/20 rounded-none flex items-center justify-center mx-auto mb-4">
+                <Send className="h-10 w-10 text-target" />
               </div>
-              <h4 className="text-2xl font-bold text-white mb-2">Message Sent!</h4>
-              <p className="text-phosphor/90">Thanks for reaching out. I'll get back to you soon.</p>
+              <h4 className="text-3xl font-bold text-white mb-2">Message Sent!</h4>
+              <p className="text-phosphor/95 text-lg">Thanks for reaching out. I'll get back to you soon.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
+                  <label htmlFor="name" className="block text-base font-mono text-sensor/95 mb-2 font-semibold tracking-wider">
                     NAME
                   </label>
                   <input
@@ -90,12 +90,12 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
+                    className="w-full px-5 py-3.5 bg-void/50 border border-sensor/30 rounded-none text-white font-mono text-base md:text-lg focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
                     placeholder="Your Name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
+                  <label htmlFor="email" className="block text-base font-mono text-sensor/95 mb-2 font-semibold tracking-wider">
                     EMAIL
                   </label>
                   <input
@@ -105,14 +105,14 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
+                    className="w-full px-5 py-3.5 bg-void/50 border border-sensor/30 rounded-none text-white font-mono text-base md:text-lg focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
                     placeholder="your.email@example.com"
                   />
                 </div>
               </div>
               
               <div>
-                <label htmlFor="subject" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
+                <label htmlFor="subject" className="block text-base font-mono text-sensor/95 mb-2 font-semibold tracking-wider">
                   SUBJECT
                 </label>
                 <input
@@ -122,13 +122,13 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
+                  className="w-full px-5 py-3.5 bg-void/50 border border-sensor/30 rounded-none text-white font-mono text-base md:text-lg focus:border-sensor focus:outline-none transition-colors placeholder:text-slate-500"
                   placeholder="Project Inquiry"
                 />
               </div>
               
               <div>
-                <label htmlFor="message" className="block text-sm font-mono text-sensor/90 mb-2 font-medium tracking-wider">
+                <label htmlFor="message" className="block text-base font-mono text-sensor/95 mb-2 font-semibold tracking-wider">
                   MESSAGE
                 </label>
                 <textarea
@@ -138,7 +138,7 @@ const Contact = () => {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-3 bg-void/50 border border-sensor/30 rounded-none text-white font-mono focus:border-sensor focus:outline-none transition-colors resize-none placeholder:text-slate-500"
+                  className="w-full px-5 py-3.5 bg-void/50 border border-sensor/30 rounded-none text-white font-mono text-base md:text-lg focus:border-sensor focus:outline-none transition-colors resize-none placeholder:text-slate-500"
                   placeholder="Your message here..."
                 />
               </div>
@@ -147,16 +147,16 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center justify-center px-8 py-4 border border-sensor text-lg font-medium rounded-none text-sensor bg-transparent hover:bg-sensor/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed tracking-wider"
+                  className="inline-flex items-center justify-center px-10 py-5 border border-sensor text-xl font-bold rounded-none text-sensor bg-transparent hover:bg-sensor/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed tracking-wider"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">
-                      <span className="animate-spin h-5 w-5 mr-2 border-2 border-sensor border-t-transparent rounded-none"></span>
+                      <span className="animate-spin h-6 w-6 mr-2 border-2 border-sensor border-t-transparent rounded-none"></span>
                       Sending...
                     </span>
                   ) : (
                     <span className="flex items-center">
-                      <Send className="mr-2 h-5 w-5" />
+                      <Send className="mr-2 h-6 w-6" />
                       Send Message
                     </span>
                   )}
@@ -175,9 +175,9 @@ const Contact = () => {
         >
           <a
             href="mailto:prasun.oct27@gmail.com"
-            className="inline-flex items-center justify-center px-8 py-4 border border-sensor text-lg font-medium rounded-none text-sensor bg-transparent hover:bg-sensor/10 transition-colors tracking-wider"
+            className="inline-flex items-center justify-center px-10 py-5 border border-sensor text-xl font-bold rounded-none text-sensor bg-transparent hover:bg-sensor/10 transition-colors tracking-wider"
           >
-            <Mail className="mr-2 h-5 w-5" />
+            <Mail className="mr-3 h-6 w-6" />
             Say Hello
           </a>
         </motion.div>

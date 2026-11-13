@@ -19,6 +19,7 @@ export default {
         sans: ['Share Tech Mono', 'monospace'],
         heading: ['Michroma', 'sans-serif'],
         mono: ['Share Tech Mono', 'monospace'],
+        origin: ['OriginTech', 'Michroma', 'sans-serif'],
         powershell: ['"Cascadia Code"', 'Consolas', '"Lucida Console"', '"Courier New"', 'monospace'],
       },
       cursor: {
