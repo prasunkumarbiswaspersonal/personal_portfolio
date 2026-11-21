@@ -2,12 +2,12 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import FragmentedUsername from './FragmentedUsername';
 
 const Hero = () => {
-  // Ultra-responsive spring physics: zero input delay with silky 120fps micro-smoothing
+  // Ultra-smooth spring physics: velvety 120fps motion without any mouse-wheel stutter or drag lag
   const { scrollY } = useScroll();
   const smoothScrollY = useSpring(scrollY, {
-    stiffness: 280,
-    damping: 32,
-    mass: 0.08,
+    stiffness: 140,
+    damping: 26,
+    mass: 0.16,
     restDelta: 0.001
   });
 
@@ -28,7 +28,7 @@ const Hero = () => {
           style={{ opacity: hudOpacity, y: hudY }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-6 text-target font-mono text-[clamp(0.75rem,2.2vw,1rem)] md:text-base tracking-[0.4em] animate-pulse uppercase text-center font-semibold"
         >
           SYSTEM.INITIALIZE // PORTFOLIO_V2.0
@@ -48,7 +48,7 @@ const Hero = () => {
             style={{ opacity: hudOpacity }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="mb-8 md:mb-10 flex items-center gap-2 sm:gap-3 text-phosphor font-mono tracking-[0.25em] sm:tracking-[0.4em] text-[clamp(1.1rem,3.2vw,1.8rem)] uppercase font-bold"
           >
             <span className="text-target font-bold">[</span>
@@ -61,7 +61,7 @@ const Hero = () => {
           style={{ opacity: hudOpacity, y: hudY }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
+          transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl mx-auto text-phosphor/95 text-[clamp(0.95rem,2.8vw,1.4rem)] md:text-2xl mb-10 md:mb-14 leading-relaxed font-mono tracking-wide font-medium"
         >
           AEROSPACE ENGINEER // FULL-STACK DEVELOPER // AI SYSTEMS ARCHITECT
@@ -74,7 +74,7 @@ const Hero = () => {
           style={{ opacity: hudOpacity }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
+          transition={{ duration: 0.8, delay: 1, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-12"
         >
           <a href="#projects" className="btn-hud text-lg md:text-xl px-12 py-5 group min-w-[240px]">
@@ -93,7 +93,7 @@ const Hero = () => {
           style={{ opacity: indicatorOpacity }}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2 }}
+          transition={{ duration: 1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center"
         >
           <a

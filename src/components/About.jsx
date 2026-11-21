@@ -6,10 +6,10 @@ const About = () => {
     <section id="about" className="py-20 target-box">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold font-mono inline-flex items-center">
@@ -20,10 +20,10 @@ const About = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-6 text-phosphor/95 text-xl md:text-2xl leading-relaxed"
           >
             <p>
@@ -39,23 +39,23 @@ const About = () => {
           </motion.div>
 
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.75, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="grid grid-cols-1 sm:grid-cols-2 gap-6"
           >
-            <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors">
+            <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors duration-300">
               <Plane className="text-target h-10 w-10 mb-4" />
               <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">Aerospace</h3>
               <p className="text-base text-phosphor/90">Flight mechanics, 3D CAD modeling, and CFD simulations.</p>
             </div>
-            <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors">
+            <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors duration-300">
               <Cpu className="text-target h-10 w-10 mb-4" />
               <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">Hardware</h3>
               <p className="text-base text-phosphor/90">Embedded systems, custom drone builds, and circuit design.</p>
             </div>
-            <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors sm:col-span-2">
+            <div className="p-6 bg-transparent rounded-none border border-sensor/20 hover:border-sensor/50 transition-colors duration-300 sm:col-span-2">
               <Code2 className="text-target h-10 w-10 mb-4" />
               <h3 className="text-lg md:text-xl font-bold text-white mb-2 break-words">Software & AI</h3>
               <p className="text-base text-phosphor/90">Full-stack web development and local LLM deployment (Ollama, Llama 3) for edge computing.</p>
