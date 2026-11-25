@@ -36,31 +36,21 @@ const Hero = () => {
       className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 text-center relative overflow-visible"
     >
       <div className="relative z-10 max-w-6xl mx-auto px-6 w-full flex flex-col items-center overflow-visible">
+        {/* Render above-the-fold Hero elements at immediate opacity: 1 so LCP paints on first frame */}
         <motion.div
           style={{ opacity: hudOpacity, y: hudY }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-6 text-target font-mono text-[clamp(0.75rem,2.2vw,1rem)] md:text-base tracking-[0.4em] animate-pulse uppercase text-center font-semibold"
+          className="mb-6 text-target font-mono text-[clamp(0.75rem,2.2vw,1rem)] md:text-base tracking-[0.4em] uppercase text-center font-semibold"
         >
           SYSTEM.INITIALIZE // PORTFOLIO_V2.0
         </motion.div>
 
         <div className="relative w-full flex flex-col items-center justify-center overflow-visible">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="w-full flex justify-center overflow-visible"
-          >
+          <div className="w-full flex justify-center overflow-visible">
             <FragmentedUsername scrollY={smoothScrollY} />
-          </motion.div>
+          </div>
 
           <motion.div
             style={{ opacity: hudOpacity }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="mb-8 md:mb-10 flex items-center gap-1.5 sm:gap-3 text-phosphor font-heading tracking-[0.12em] sm:tracking-[0.26em] text-[clamp(0.82rem,3.5vw,1.65rem)] uppercase font-bold whitespace-nowrap"
           >
             <span className="text-target font-bold">[</span>
@@ -71,9 +61,6 @@ const Hero = () => {
 
         <motion.p
           style={{ opacity: hudOpacity, y: hudY }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl mx-auto text-phosphor/95 text-[clamp(0.95rem,2.8vw,1.4rem)] md:text-2xl mb-10 md:mb-14 leading-relaxed font-mono tracking-wide font-medium"
         >
           AEROSPACE ENGINEER // FULL-STACK DEVELOPER // AI SYSTEMS ARCHITECT
@@ -84,9 +71,6 @@ const Hero = () => {
 
         <motion.div
           style={{ opacity: hudOpacity }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-12"
         >
           <a
@@ -118,12 +102,9 @@ const Hero = () => {
           )}
         </motion.div>
 
-        {/* Scroll Down Indicator Animation */}
+        {/* Scroll Down Indicator Animation (pure GPU CSS keyframes instead of infinite JS RAF) */}
         <motion.div
           style={{ opacity: indicatorOpacity }}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center"
         >
           <a
@@ -136,28 +117,13 @@ const Hero = () => {
               SCROLL // TO ENGAGE
             </span>
             <div className="w-5 h-9 border-2 border-sensor/40 group-hover:border-sensor rounded-full flex justify-center p-1 transition-colors">
-              <motion.div
-                animate={{
-                  y: [0, 14, 0],
-                  opacity: [0.3, 1, 0.3],
-                }}
-                transition={{
-                  duration: 1.8,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="w-1 h-2 bg-target rounded-full"
-              />
+              <div className="w-1 h-2 bg-target rounded-full animate-scroll-dot" />
             </div>
-            <motion.div
-              animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              className="text-sensor/50 group-hover:text-sensor"
-            >
+            <div className="text-sensor/50 group-hover:text-sensor animate-scroll-chevron">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </motion.div>
+            </div>
           </a>
         </motion.div>
       </div>

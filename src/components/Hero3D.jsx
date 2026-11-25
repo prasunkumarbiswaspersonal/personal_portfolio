@@ -258,7 +258,7 @@ const createCircleTexture = () => {
 };
 
 const generateStarfield = () => {
-  const count = 8000;
+  const count = 2800;
   const arr = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
 
@@ -335,7 +335,7 @@ const Starfield = () => {
 };
 
 const generateNebula = () => {
-  const count = 2000;
+  const count = 650;
   const arr = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
 
@@ -483,7 +483,7 @@ const generateAsteroids = (count) => {
   return temp;
 };
 
-const INITIAL_ASTEROIDS = generateAsteroids(250);
+const INITIAL_ASTEROIDS = generateAsteroids(150);
 
 const Asteroids = () => {
   const meshRef = useRef();

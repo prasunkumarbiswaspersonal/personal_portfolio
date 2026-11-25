@@ -6,15 +6,24 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   build: {
+    sourcemap: true,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('three') || id.includes('@react-three')) return 'vendor-three';
-            if (id.includes('framer-motion')) return 'vendor-framer';
-            if (id.includes('lucide-react') || id.includes('react-icons')) return 'vendor-icons';
-            if (id.includes('react/') || id.includes('react-dom/')) return 'vendor-react';
+            if (/[\\/](three|@react-three|three-stdlib|suspend-react|its-fine|zustand|troika)[\\/]/.test(id)) {
+              return 'vendor-three';
+            }
+            if (/[\\/](framer-motion|motion-dom|motion-utils)[\\/]/.test(id)) {
+              return 'vendor-framer';
+            }
+            if (/[\\/](lucide-react|react-icons)[\\/]/.test(id)) {
+              return 'vendor-icons';
+            }
+            if (/[\\/](react|react-dom|scheduler)[\\/]/.test(id)) {
+              return 'vendor-react';
+            }
             return 'vendor';
           }
         }

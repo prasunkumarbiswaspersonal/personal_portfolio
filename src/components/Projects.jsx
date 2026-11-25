@@ -27,28 +27,32 @@ const projectsData = [
     ],
     images: [
       {
-        src: "/images/projects/boeing-wingineers.jpg",
+        src: "/images/projects/boeing-wingineers.webp",
+        thumb: "/images/projects/boeing-wingineers-thumb.webp",
         title: "Team Wingineers",
         caption: "Team Wingineers with the custom yellow & white RC aircraft and transmitter on the flight field.",
         shortLabel: "WINGINEERS",
         tag: "TEAM // WINGINEERS"
       },
       {
-        src: "/images/projects/boeing-cutm-team.jpg",
+        src: "/images/projects/boeing-cutm-team.webp",
+        thumb: "/images/projects/boeing-cutm-team-thumb.webp",
         title: "CUTM Aerospace Contingent",
         caption: "The entire Aerospace team from CUTM that participated in the Boeing competition.",
         shortLabel: "CUTM TEAM",
         tag: "CUTM // CONTINGENT"
       },
       {
-        src: "/images/projects/boeing-group.jpg",
+        src: "/images/projects/boeing-group.webp",
+        thumb: "/images/projects/boeing-group-thumb.webp",
         title: "Squad Celebration & Field Debrief",
         caption: "Post-flight crew celebration after completing competitive flight rounds.",
         shortLabel: "CELEBRATION",
         tag: "CREW // TELEMETRY"
       },
       {
-        src: "/images/projects/boeing-banner.jpg",
+        src: "/images/projects/boeing-banner.webp",
+        thumb: "/images/projects/boeing-banner-thumb.webp",
         title: "Official Boeing Competition Arena",
         caption: "National Aeromodelling stage at KIIT Cricket Stadium featuring Indian Navy P-8I.",
         shortLabel: "ARENA BILLBOARD",

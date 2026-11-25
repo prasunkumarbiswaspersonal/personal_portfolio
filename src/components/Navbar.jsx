@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { Menu, X, Terminal, Radio } from 'lucide-react';
 import { useScroll, useActiveNav } from './ScrollContext';
@@ -14,15 +14,41 @@ const NAV_LINKS = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
+  const [reticle, setReticle] = useState(null);
+  const linkRefs = useRef({});
+  const navListRef = useRef(null);
+
   const { scrollProgressMV, triggerWarp, isWarping } = useScroll();
   const { activeSection, scrollPercent } = useActiveNav();
 
-  // Pipe scrollProgressMV through smooth liquid spring for laser line continuity without React re-renders
+  // Pipe scrollProgressMV through smooth liquid spring without React re-renders
   const smoothProgress = useSpring(scrollProgressMV, {
     stiffness: 140,
     damping: 24,
     mass: 0.15
   });
+
+  // Measure sliding HUD reticle asynchronously via rAF instead of Framer layoutId forced reflows
+  const measureReticle = useCallback((sectionId) => {
+    const el = linkRefs.current[sectionId];
+    if (!el) return;
+    requestAnimationFrame(() => {
+      setReticle({
+        x: el.offsetLeft,
+        width: el.offsetWidth
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    measureReticle(activeSection);
+  }, [activeSection, measureReticle]);
+
+  useEffect(() => {
+    const onResize = () => measureReticle(activeSection);
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, [activeSection, measureReticle]);
 
   const handleNavClick = (e, targetId) => {
     e.preventDefault();
@@ -76,9 +102,24 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation Links with Sliding HUD Reticle */}
+          {/* Desktop Navigation Links with Zero-Reflow Sliding HUD Reticle */}
           <div className="hidden md:block">
-            <div className="flex items-center space-x-1 lg:space-x-3">
+            <div ref={navListRef} className="relative flex items-center space-x-1 lg:space-x-3">
+              {reticle && (
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 border border-sensor/70 bg-sensor/10 backdrop-blur-sm -z-10 shadow-[0_0_20px_rgba(0,229,255,0.3)]"
+                  initial={false}
+                  animate={{ x: reticle.x, width: reticle.width }}
+                  transition={{ type: "spring", stiffness: 210, damping: 25, mass: 0.45 }}
+                >
+                  <span className="absolute -top-[2px] -left-[2px] w-2 h-2 border-t-2 border-l-2 border-target" />
+                  <span className="absolute -top-[2px] -right-[2px] w-2 h-2 border-t-2 border-r-2 border-target" />
+                  <span className="absolute -bottom-[2px] -left-[2px] w-2 h-2 border-b-2 border-l-2 border-target" />
+                  <span className="absolute -bottom-[2px] -right-[2px] w-2 h-2 border-b-2 border-r-2 border-target" />
+                </motion.div>
+              )}
+
               {NAV_LINKS.map((link) => {
                 const isActive = activeSection === link.id;
                 const isHovered = hoveredLink === link.id;
@@ -86,6 +127,7 @@ const Navbar = () => {
                 return (
                   <a
                     key={link.id}
+                    ref={(el) => { linkRefs.current[link.id] = el; }}
                     href={`#${link.id}`}
                     onClick={(e) => handleNavClick(e, link.id)}
                     onMouseEnter={() => setHoveredLink(link.id)}
@@ -95,29 +137,19 @@ const Navbar = () => {
                       isActive ? 'text-sensor font-bold' : 'text-phosphor/80 hover:text-sensor'
                     }`}
                   >
-                    {/* Velvety Sliding HUD Reticle on Active Link */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeNavIndicator"
-                        className="absolute inset-0 border border-sensor/70 bg-sensor/10 backdrop-blur-sm -z-10 shadow-[0_0_20px_rgba(0,229,255,0.3)]"
-                        transition={{ type: "spring", stiffness: 190, damping: 24, mass: 0.5 }}
-                      >
-                        {/* Tactical HUD Corner Crosshairs */}
-                        <span className="absolute -top-[2px] -left-[2px] w-2 h-2 border-t-2 border-l-2 border-target" />
-                        <span className="absolute -top-[2px] -right-[2px] w-2 h-2 border-t-2 border-r-2 border-target" />
-                        <span className="absolute -bottom-[2px] -left-[2px] w-2 h-2 border-b-2 border-l-2 border-target" />
-                        <span className="absolute -bottom-[2px] -right-[2px] w-2 h-2 border-b-2 border-r-2 border-target" />
-                      </motion.div>
+                    {/* Static fallback border when reticle hasn't measured yet */}
+                    {!reticle && isActive && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0 border border-sensor/70 bg-sensor/10 -z-10"
+                      />
                     )}
 
-                    {/* Interactive hover targeting brackets */}
+                    {/* Lightweight CSS hover targeting box */}
                     {!isActive && isHovered && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute inset-0 border border-sensor/30 bg-sensor/5 -z-10"
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0 border border-sensor/30 bg-sensor/5 -z-10 transition-opacity duration-200"
                       />
                     )}
 

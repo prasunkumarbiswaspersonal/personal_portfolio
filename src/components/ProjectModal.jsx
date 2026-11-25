@@ -24,25 +24,25 @@ const BOEING_DETAILS = {
   ],
   images: [
     {
-      src: "/images/projects/boeing-wingineers.jpg",
+      src: "/images/projects/boeing-wingineers.webp",
       title: "Team Wingineers",
       desc: "Team Wingineers with the custom yellow & white RC competition aircraft and transmitter on the flight field.",
       tag: "TEAM // WINGINEERS"
     },
     {
-      src: "/images/projects/boeing-cutm-team.jpg",
+      src: "/images/projects/boeing-cutm-team.webp",
       title: "CUTM Aerospace Team (Full Contingent)",
       desc: "The entire Aerospace delegation from Centurion University of Technology and Management (CUTM) that participated in the Boeing competition.",
       tag: "CUTM // CONTINGENT"
     },
     {
-      src: "/images/projects/boeing-group.jpg",
+      src: "/images/projects/boeing-group.webp",
       title: "Squad Celebration & Field Debrief",
       desc: "Post-flight crew celebration after completing competitive flight rounds on the field.",
       tag: "CREW // TELEMETRY"
     },
     {
-      src: "/images/projects/boeing-banner.jpg",
+      src: "/images/projects/boeing-banner.webp",
       title: "Official Boeing Competition Arena",
       desc: "National Aeromodelling stage at KIIT Cricket Stadium featuring Indian Navy P-8I maritime patrol aircraft.",
       tag: "EVENT // BRIEFING"

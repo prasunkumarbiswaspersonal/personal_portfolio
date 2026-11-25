@@ -57,6 +57,8 @@ const ProjectCard = ({ project, onOpenModal }) => {
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 loading="lazy"
                 decoding="async"
+                width={1024}
+                height={640}
                 className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-700 pointer-events-none"
               />
             </AnimatePresence>
@@ -142,10 +144,12 @@ const ProjectCard = ({ project, onOpenModal }) => {
                 aria-label={`Select image ${idx + 1}: ${img.title}`}
               >
                 <img
-                  src={img.src}
+                  src={img.thumb || img.src}
                   alt={img.title || `Thumbnail ${idx + 1}`}
                   loading="lazy"
                   decoding="async"
+                  width={360}
+                  height={225}
                   className="w-full h-full object-cover object-[center_30%]"
                 />
                 <div className="absolute bottom-0 inset-x-0 bg-void/85 px-1 py-0.5 flex justify-between items-center text-[9px] font-mono">

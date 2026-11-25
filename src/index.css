@@ -155,24 +155,56 @@
     left: 200%;
   }
 
-  /* Animated Fluid Orbs */
+  /* Static GPU-free radial ambient orbs (no expensive fullscreen blur filters) */
   .orb {
-    @apply absolute rounded-full blur-[100px] opacity-20 -z-10 pointer-events-none;
-    animation: float 25s infinite alternate ease-in-out;
+    @apply absolute rounded-full -z-10 pointer-events-none;
   }
 
-  @keyframes float {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-    50% { transform: translate(50px, -30px) scale(1.1) rotate(10deg); }
-    100% { transform: translate(100px, 100px) scale(1.2) rotate(-10deg); }
+  .orb-1 {
+    width: 720px;
+    height: 720px;
+    top: -15%;
+    left: -12%;
+    background: radial-gradient(circle, rgba(26, 0, 255, 0.14) 0%, rgba(26, 0, 255, 0) 70%);
   }
 
-  .orb-1 { width: 600px; height: 600px; background: #1a00ff; top: -10%; left: -10%; }
-  .orb-2 { width: 500px; height: 500px; background: #2a00ff; bottom: 20%; right: -5%; animation-delay: -7s; }
-  .orb-3 { width: 400px; height: 400px; background: #6600ff; top: 40%; left: 30%; animation-delay: -15s; }
+  .orb-2 {
+    width: 620px;
+    height: 620px;
+    bottom: 12%;
+    right: -8%;
+    background: radial-gradient(circle, rgba(42, 0, 255, 0.12) 0%, rgba(42, 0, 255, 0) 70%);
+  }
+
+  .orb-3 {
+    width: 520px;
+    height: 520px;
+    top: 38%;
+    left: 28%;
+    background: radial-gradient(circle, rgba(102, 0, 255, 0.1) 0%, rgba(102, 0, 255, 0) 70%);
+  }
+
+  /* Pure CSS keyframes for Hero scroll prompt (zero JS loop cost) */
+  @keyframes scroll-dot {
+    0%, 100% { transform: translateY(0); opacity: 0.35; }
+    50% { transform: translateY(14px); opacity: 1; }
+  }
+
+  @keyframes scroll-chevron {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+  }
+
+  .animate-scroll-dot {
+    animation: scroll-dot 1.8s ease-in-out infinite;
+  }
+
+  .animate-scroll-chevron {
+    animation: scroll-chevron 1.5s ease-in-out infinite;
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .orb, .scanlines {
+    .animate-scroll-dot, .animate-scroll-chevron {
       animation: none !important;
     }
   }
