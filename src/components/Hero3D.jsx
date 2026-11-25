@@ -6,24 +6,24 @@ import * as THREE from 'three';
 import { useScroll } from './ScrollContext';
 
 // Module-level reusable vectors eliminate per-frame heap allocations inside useFrame
-// Start position placed comfortably inside the 35° camera top-left frustum below the 80px navbar
+// Start position hidden off the top-left corner at scrollY=0, gliding in smoothly on scroll
 const MID_POS = new THREE.Vector3(0, 0, 0);
 const END_POS = new THREE.Vector3(2.1, -1.1, -1.2);
 
 const DRONE_BASE_SCALE = 0.01;
-const DRONE_START_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE * 0.55);
+const DRONE_START_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE * 0.35);
 const DRONE_MID_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE);
 const DRONE_END_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE * 0.85);
 
 const PLACEHOLDER_BASE_SCALE = 1.2;
-const PLACEHOLDER_START_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE * 0.55);
+const PLACEHOLDER_START_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE * 0.35);
 const PLACEHOLDER_MID_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE);
 const PLACEHOLDER_END_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE * 0.85);
 
-const SCRATCH_START_POS = new THREE.Vector3(-1.25, 0.82, 0);
+const SCRATCH_START_POS = new THREE.Vector3(-2.5, 1.68, -0.4);
 const SCRATCH_POS = new THREE.Vector3();
 const SCRATCH_SCALE = new THREE.Vector3();
-const INITIAL_POS_TUPLE = [-1.25, 0.82, 0];
+const INITIAL_POS_TUPLE = [-2.5, 1.68, -0.4];
 const INITIAL_ROT_TUPLE = [0, -Math.PI / 2, 0];
 
 const updateFlightTransform = (
@@ -36,8 +36,8 @@ const updateFlightTransform = (
   endScale,
   snap = false
 ) => {
-  // Keep start X inside top-left corner on both wide desktop and narrow mobile viewports
-  SCRATCH_START_POS.set(-Math.min(1.25, viewportWidth * 0.30), 0.82, 0);
+  // Park completely off top-left corner at scrollY = 0 on both wide desktop and mobile
+  SCRATCH_START_POS.set(-Math.max(1.5, viewportWidth * 0.60), 1.68, -0.4);
 
   if (scrollProgress < 0.5) {
     const t = scrollProgress * 2;
@@ -171,7 +171,7 @@ const DroneModel = () => {
       ref={groupRef}
       position={INITIAL_POS_TUPLE}
       rotation={INITIAL_ROT_TUPLE}
-      scale={DRONE_BASE_SCALE * 0.55}
+      scale={DRONE_BASE_SCALE * 0.35}
     >
       <primitive object={scene} dispose={null} />
     </group>
@@ -205,7 +205,7 @@ const DronePlaceholder = () => {
       ref={groupRef}
       position={INITIAL_POS_TUPLE}
       rotation={INITIAL_ROT_TUPLE}
-      scale={PLACEHOLDER_BASE_SCALE * 0.55}
+      scale={PLACEHOLDER_BASE_SCALE * 0.35}
     >
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <mesh>
