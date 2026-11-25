@@ -5,183 +5,174 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 import { useScroll } from './ScrollContext';
 
-const sectionConfigs = {
-  hero: {
-    cameraPos: [0, 1.8, 4.5],
-    fov: 45,
-    target: [0, 0, 0],
-    rotation: [0, 0, 0],
-    highlight: null,
-  },
-  about: {
-    cameraPos: [2, 1.5, 2],
-    fov: 35,
-    target: [0, 0.3, 0],
-    rotation: [0, -Math.PI / 6, 0],
-    highlight: 'body',
-  },
-  skills: {
-    cameraPos: [0, 2, 2.5],
-    fov: 32,
-    target: [0, 0.5, 0],
-    rotation: [-Math.PI / 8, 0, 0],
-    highlight: 'motor',
-  },
-  projects: {
-    cameraPos: [-2, 1, 2],
-    fov: 35,
-    target: [0, -0.2, 0],
-    rotation: [0, Math.PI / 6, 0],
-    highlight: 'prop',
-  },
-  contact: {
-    cameraPos: [0, 1, 3],
-    fov: 40,
-    target: [0, 0, 0],
-    rotation: [0, 0, 0],
-    highlight: null,
-  },
+// Module-level reusable vectors eliminate per-frame heap allocations inside useFrame
+// Start position placed comfortably inside the 35° camera top-left frustum below the 80px navbar
+const MID_POS = new THREE.Vector3(0, 0, 0);
+const END_POS = new THREE.Vector3(2.1, -1.1, -1.2);
+
+const DRONE_BASE_SCALE = 0.01;
+const DRONE_START_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE * 0.55);
+const DRONE_MID_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE);
+const DRONE_END_SCALE = new THREE.Vector3().setScalar(DRONE_BASE_SCALE * 0.85);
+
+const PLACEHOLDER_BASE_SCALE = 1.2;
+const PLACEHOLDER_START_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE * 0.55);
+const PLACEHOLDER_MID_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE);
+const PLACEHOLDER_END_SCALE = new THREE.Vector3().setScalar(PLACEHOLDER_BASE_SCALE * 0.85);
+
+const SCRATCH_START_POS = new THREE.Vector3(-1.25, 0.82, 0);
+const SCRATCH_POS = new THREE.Vector3();
+const SCRATCH_SCALE = new THREE.Vector3();
+const INITIAL_POS_TUPLE = [-1.25, 0.82, 0];
+const INITIAL_ROT_TUPLE = [0, -Math.PI / 2, 0];
+
+const updateFlightTransform = (
+  group,
+  scrollProgress,
+  delta,
+  viewportWidth,
+  startScale,
+  midScale,
+  endScale,
+  snap = false
+) => {
+  // Keep start X inside top-left corner on both wide desktop and narrow mobile viewports
+  SCRATCH_START_POS.set(-Math.min(1.25, viewportWidth * 0.30), 0.82, 0);
+
+  if (scrollProgress < 0.5) {
+    const t = scrollProgress * 2;
+    SCRATCH_POS.lerpVectors(SCRATCH_START_POS, MID_POS, t);
+    SCRATCH_SCALE.lerpVectors(startScale, midScale, t);
+  } else {
+    const t = (scrollProgress - 0.5) * 2;
+    SCRATCH_POS.lerpVectors(MID_POS, END_POS, t);
+    SCRATCH_SCALE.lerpVectors(midScale, endScale, t);
+  }
+
+  if (snap) {
+    group.position.copy(SCRATCH_POS);
+    group.scale.copy(SCRATCH_SCALE);
+  } else {
+    group.position.x = THREE.MathUtils.damp(group.position.x, SCRATCH_POS.x, 3.8, delta);
+    group.position.y = THREE.MathUtils.damp(group.position.y, SCRATCH_POS.y, 3.8, delta);
+    group.position.z = THREE.MathUtils.damp(group.position.z, SCRATCH_POS.z, 3.8, delta);
+
+    group.scale.x = THREE.MathUtils.damp(group.scale.x, SCRATCH_SCALE.x, 3.8, delta);
+    group.scale.y = THREE.MathUtils.damp(group.scale.y, SCRATCH_SCALE.y, 3.8, delta);
+    group.scale.z = THREE.MathUtils.damp(group.scale.z, SCRATCH_SCALE.z, 3.8, delta);
+  }
+
+  group.rotation.set(0, -Math.PI / 2, 0);
 };
 
 const DroneModel = () => {
   const groupRef = useRef();
-  const { activeSection, sectionProgress, scrollProgress } = useScroll();
+  const initializedRef = useRef(false);
+  const { getScrollMetrics } = useScroll();
   const [modelError, setModelError] = useState(null);
-  const [modelLoaded, setModelLoaded] = useState(false);
   const [scene, setScene] = useState(null);
-  const targetConfig = sectionConfigs[activeSection] || sectionConfigs.hero;
 
   useEffect(() => {
+    let isMounted = true;
     const loader = new GLTFLoader();
+
     loader.load(
       '/models/drone-frame.glb',
       (gltf) => {
+        if (!isMounted) return;
+
+        gltf.scene.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = false;
+            child.receiveShadow = false;
+            child.frustumCulled = false;
+
+            if (child.material) {
+              const mats = Array.isArray(child.material) ? child.material : [child.material];
+              mats.forEach((mat) => {
+                mat.metalness = 0.8;
+                mat.roughness = 0.2;
+                mat.transparent = true;
+                mat.opacity = 1.0;
+              });
+            }
+
+            if (child.geometry) {
+              child.geometry.computeBoundingSphere();
+              child.geometry.computeBoundingBox();
+
+              const oldEdges = child.children.find((c) => c.isLineSegments);
+              if (oldEdges) child.remove(oldEdges);
+
+              const edgesGeometry = new THREE.EdgesGeometry(child.geometry, 40);
+              const edgesMaterial = new THREE.LineBasicMaterial({
+                color: new THREE.Color('#00E5FF'),
+                transparent: true,
+                opacity: 0.6,
+              });
+              const edgeLines = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              child.add(edgeLines);
+            }
+          }
+        });
+
         setScene(gltf.scene);
-        setModelLoaded(true);
       },
       undefined,
       (error) => {
+        if (!isMounted) return;
         console.warn('GLTF load failed:', error);
         setModelError(error);
       }
     );
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const meshes = useMemo(() => {
-    if (!scene) return [];
-    const meshList = [];
-    scene.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = false;
-        child.receiveShadow = false;
-        child.frustumCulled = false;
-        meshList.push(child);
+  // Dispose GLB GPU resources cleanly on unmount
+  useEffect(() => {
+    return () => {
+      if (!scene) return;
+      scene.traverse((child) => {
+        if (child.geometry) child.geometry.dispose();
         if (child.material) {
           const mats = Array.isArray(child.material) ? child.material : [child.material];
-          mats.forEach((mat) => {
-            mat.metalness = 0.8;
-            mat.roughness = 0.2;
-            mat.transparent = true;
-            mat.opacity = 1.0;
-          });
+          mats.forEach((mat) => mat.dispose());
         }
-        if (child.geometry) {
-          child.geometry.computeBoundingSphere();
-          child.geometry.computeBoundingBox();
-
-          const oldEdges = child.children.find(c => c.isLineSegments);
-          if (oldEdges) child.remove(oldEdges);
-
-          const edgesGeometry = new THREE.EdgesGeometry(child.geometry, 40);
-          const edgesMaterial = new THREE.LineBasicMaterial({
-            color: new THREE.Color('#00E5FF'),
-            transparent: true,
-            opacity: 0.6,
-          });
-          const edgeLines = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-          child.add(edgeLines);
-        }
-      }
-    });
-    return meshList;
+      });
+    };
   }, [scene]);
 
   useFrame((state, delta) => {
-    if (groupRef.current) {
-      const startPos = new THREE.Vector3(-1.5, 1.5, 0); 
-      const midPos = new THREE.Vector3(0, 0, 0);    
-      const endPos = new THREE.Vector3(2.0, -1.8, 1.5);   
-
-      const baseScale = 0.01;
-      const startScale = new THREE.Vector3().setScalar(baseScale * 0.4); 
-      const midScale = new THREE.Vector3().setScalar(baseScale);          
-      const endScale = new THREE.Vector3().setScalar(baseScale * 1.6);    
-
-      let targetPos = new THREE.Vector3();
-      let targetScale = new THREE.Vector3();
-
-      if (scrollProgress < 0.5) {
-        const t = scrollProgress * 2;
-        targetPos.lerpVectors(startPos, midPos, t);
-        targetScale.lerpVectors(startScale, midScale, t);
-      } else {
-        const t = (scrollProgress - 0.5) * 2;
-        targetPos.lerpVectors(midPos, endPos, t);
-        targetScale.lerpVectors(midScale, endScale, t);
-      }
-
-      // Delta-based liquid smoothing (independent of monitor refresh rate)
-      groupRef.current.position.x = THREE.MathUtils.damp(groupRef.current.position.x, targetPos.x, 3.8, delta);
-      groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, targetPos.y, 3.8, delta);
-      groupRef.current.position.z = THREE.MathUtils.damp(groupRef.current.position.z, targetPos.z, 3.8, delta);
-
-      groupRef.current.scale.x = THREE.MathUtils.damp(groupRef.current.scale.x, targetScale.x, 3.8, delta);
-      groupRef.current.scale.y = THREE.MathUtils.damp(groupRef.current.scale.y, targetScale.y, 3.8, delta);
-      groupRef.current.scale.z = THREE.MathUtils.damp(groupRef.current.scale.z, targetScale.z, 3.8, delta);
-
-      groupRef.current.rotation.set(0, -Math.PI / 2, 0);
-    }
-
-    const highlightType = targetConfig.highlight;
-    if (highlightType && meshes.length > 0) {
-      const highlightProgress = sectionProgress[activeSection] || 0;
-      meshes.forEach((mesh) => {
-        const name = (mesh.name || '').toLowerCase();
-        const isTarget = name.includes(highlightType);
-        if (mesh.material) {
-          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach((mat) => {
-            if (isTarget) {
-              mat.emissiveIntensity = THREE.MathUtils.lerp(
-                mat.emissiveIntensity || 0,
-                1.2,
-                highlightProgress * 0.5
-              );
-              mat.opacity = 1;
-            } else {
-              mat.opacity = THREE.MathUtils.lerp(1, 0.3, highlightProgress * 0.5);
-            }
-          });
-        }
-      });
-    }
+    if (!groupRef.current) return;
+    const { scrollProgress } = getScrollMetrics();
+    const shouldSnap = !initializedRef.current;
+    initializedRef.current = true;
+    updateFlightTransform(
+      groupRef.current,
+      scrollProgress,
+      delta,
+      state.viewport.width,
+      DRONE_START_SCALE,
+      DRONE_MID_SCALE,
+      DRONE_END_SCALE,
+      shouldSnap
+    );
   });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!modelLoaded && !modelError) {
-        setModelError(new Error('Loading timeout'));
-      }
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [modelLoaded, modelError]);
-
-  if (modelError || !modelLoaded) {
+  if (modelError || !scene) {
     return <DronePlaceholder />;
   }
 
   return (
-    <group ref={groupRef} scale={0.01}>
+    <group
+      ref={groupRef}
+      position={INITIAL_POS_TUPLE}
+      rotation={INITIAL_ROT_TUPLE}
+      scale={DRONE_BASE_SCALE * 0.55}
+    >
       <primitive object={scene} dispose={null} />
     </group>
   );
@@ -189,75 +180,62 @@ const DroneModel = () => {
 
 const DronePlaceholder = () => {
   const groupRef = useRef();
-  const { scrollProgress } = useScroll();
+  const initializedRef = useRef(false);
+  const { getScrollMetrics } = useScroll();
 
   useFrame((state, delta) => {
-    if (groupRef.current) {
-      const startPos = new THREE.Vector3(-1.5, 1.5, 0);
-      const midPos = new THREE.Vector3(0, 0, 0);
-      const endPos = new THREE.Vector3(2.0, -1.8, 1.5);
-
-      const baseScale = 1.2;
-      const startScale = new THREE.Vector3().setScalar(baseScale * 0.4);
-      const midScale = new THREE.Vector3().setScalar(baseScale);
-      const endScale = new THREE.Vector3().setScalar(baseScale * 1.6);
-
-      let targetPos = new THREE.Vector3();
-      let targetScale = new THREE.Vector3();
-      
-      if (scrollProgress < 0.5) {
-        const t = scrollProgress * 2;
-        targetPos.lerpVectors(startPos, midPos, t);
-        targetScale.lerpVectors(startScale, midScale, t);
-      } else {
-        const t = (scrollProgress - 0.5) * 2;
-        targetPos.lerpVectors(midPos, endPos, t);
-        targetScale.lerpVectors(midScale, endScale, t);
-      }
-
-      groupRef.current.position.x = THREE.MathUtils.damp(groupRef.current.position.x, targetPos.x, 3.8, delta);
-      groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, targetPos.y, 3.8, delta);
-      groupRef.current.position.z = THREE.MathUtils.damp(groupRef.current.position.z, targetPos.z, 3.8, delta);
-
-      groupRef.current.scale.x = THREE.MathUtils.damp(groupRef.current.scale.x, targetScale.x, 3.8, delta);
-      groupRef.current.scale.y = THREE.MathUtils.damp(groupRef.current.scale.y, targetScale.y, 3.8, delta);
-      groupRef.current.scale.z = THREE.MathUtils.damp(groupRef.current.scale.z, targetScale.z, 3.8, delta);
-
-      groupRef.current.rotation.set(0, -Math.PI / 2, 0);
-    }
+    if (!groupRef.current) return;
+    const { scrollProgress } = getScrollMetrics();
+    const shouldSnap = !initializedRef.current;
+    initializedRef.current = true;
+    updateFlightTransform(
+      groupRef.current,
+      scrollProgress,
+      delta,
+      state.viewport.width,
+      PLACEHOLDER_START_SCALE,
+      PLACEHOLDER_MID_SCALE,
+      PLACEHOLDER_END_SCALE,
+      shouldSnap
+    );
   });
 
   return (
-    <group ref={groupRef} scale={1.2}>
+    <group
+      ref={groupRef}
+      position={INITIAL_POS_TUPLE}
+      rotation={INITIAL_ROT_TUPLE}
+      scale={PLACEHOLDER_BASE_SCALE * 0.55}
+    >
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <mesh>
           <cylinderGeometry args={[0.08, 0.08, 1.2, 8]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.1} roughness={0.2} emissive="#000000" emissiveIntensity={0.0} clearcoat={1.0} clearcoatRoughness={0.05} />
+          <meshStandardMaterial color="#ffffff" metalness={0.1} roughness={0.2} />
         </mesh>
       </group>
       <group rotation={[0, 0, Math.PI / 4]}>
         <mesh>
           <cylinderGeometry args={[0.06, 0.06, 1.2, 8]} />
-          <meshStandardMaterial color="#222222" metalness={0.5} roughness={0.6} emissive="#000000" emissiveIntensity={0.0} clearcoat={0.2} clearcoatRoughness={0.4} />
+          <meshStandardMaterial color="#222222" metalness={0.5} roughness={0.6} />
         </mesh>
       </group>
       <group rotation={[0, 0, -Math.PI / 4]}>
         <mesh>
           <cylinderGeometry args={[0.06, 0.06, 1.2, 8]} />
-          <meshStandardMaterial color="#222222" metalness={0.5} roughness={0.6} emissive="#000000" emissiveIntensity={0.0} clearcoat={0.2} clearcoatRoughness={0.4} />
+          <meshStandardMaterial color="#222222" metalness={0.5} roughness={0.6} />
         </mesh>
       </group>
       <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.3, 0.3, 0.15, 16]} />
-        <meshStandardMaterial color="#dddddd" metalness={0.2} roughness={0.3} emissive="#000000" emissiveIntensity={0.0} clearcoat={0.5} clearcoatRoughness={0.2} />
+        <meshStandardMaterial color="#dddddd" metalness={0.2} roughness={0.3} />
       </mesh>
       <mesh position={[0, 0.08, 0]}>
         <octahedronGeometry args={[0.12, 0]} />
-        <meshStandardMaterial color="#050505" metalness={0.05} roughness={0.1} emissive="#00E5FF" emissiveIntensity={0.3} clearcoat={0.2} clearcoatRoughness={0.3} />
+        <meshStandardMaterial color="#050505" metalness={0.05} roughness={0.1} emissive="#00E5FF" emissiveIntensity={0.3} />
       </mesh>
       <mesh position={[0, -0.08, 0]}>
         <octahedronGeometry args={[0.12, 0]} />
-        <meshStandardMaterial color="#050505" metalness={0.05} roughness={0.1} emissive="#FF003C" emissiveIntensity={0.3} clearcoat={0.2} clearcoatRoughness={0.3} />
+        <meshStandardMaterial color="#050505" metalness={0.05} roughness={0.1} emissive="#FF003C" emissiveIntensity={0.3} />
       </mesh>
     </group>
   );
@@ -280,10 +258,9 @@ const createCircleTexture = () => {
 };
 
 const generateStarfield = () => {
-  const count = 12000;
+  const count = 8000;
   const arr = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
 
   for (let i = 0; i < count; i++) {
     const radius = 60 + Math.random() * 250;
@@ -308,10 +285,8 @@ const generateStarfield = () => {
       colors[i * 3 + 1] = 0.2;
       colors[i * 3 + 2] = 0.8;
     }
-
-    sizes[i] = Math.random() > 0.95 ? Math.random() * 3 + 1 : Math.random() * 1 + 0.2;
   }
-  return { positions: arr, colors, sizes };
+  return { positions: arr, colors };
 };
 
 const INITIAL_STARFIELD = generateStarfield();
@@ -323,7 +298,13 @@ const Starfield = () => {
   const texture = useMemo(() => createCircleTexture(), []);
   const positions = INITIAL_STARFIELD;
 
-  useFrame((state, delta) => {
+  useEffect(() => {
+    return () => {
+      if (texture) texture.dispose();
+    };
+  }, [texture]);
+
+  useFrame((_, delta) => {
     const targetWarp = isWarping ? 1 : 0;
     warpSpeed.current = THREE.MathUtils.damp(warpSpeed.current, targetWarp, 4.5, delta);
 
@@ -339,7 +320,6 @@ const Starfield = () => {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions.positions, 3]} />
         <bufferAttribute attach="attributes-color" args={[positions.colors, 3]} />
-        <bufferAttribute attach="attributes-size" args={[positions.sizes, 1]} />
       </bufferGeometry>
       <pointsMaterial
         size={1}
@@ -355,10 +335,9 @@ const Starfield = () => {
 };
 
 const generateNebula = () => {
-  const count = 3000;
+  const count = 2000;
   const arr = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
 
   for (let i = 0; i < count; i++) {
     const radius = 25 + Math.random() * 65;
@@ -379,10 +358,8 @@ const generateNebula = () => {
       colors[i * 3 + 1] = 0.0;
       colors[i * 3 + 2] = 0.24;
     }
-
-    sizes[i] = Math.random() * 8 + 3;
   }
-  return { positions: arr, colors, sizes };
+  return { positions: arr, colors };
 };
 
 const INITIAL_NEBULA = generateNebula();
@@ -394,7 +371,13 @@ const Nebula = () => {
   const texture = useMemo(() => createCircleTexture(), []);
   const positions = INITIAL_NEBULA;
 
-  useFrame((state, delta) => {
+  useEffect(() => {
+    return () => {
+      if (texture) texture.dispose();
+    };
+  }, [texture]);
+
+  useFrame((_, delta) => {
     const targetWarp = isWarping ? 1 : 0;
     warpSpeed.current = THREE.MathUtils.damp(warpSpeed.current, targetWarp, 4.5, delta);
 
@@ -409,7 +392,6 @@ const Nebula = () => {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions.positions, 3]} />
         <bufferAttribute attach="attributes-color" args={[positions.colors, 3]} />
-        <bufferAttribute attach="attributes-size" args={[positions.sizes, 1]} />
       </bufferGeometry>
       <pointsMaterial
         size={3}
@@ -427,7 +409,7 @@ const Nebula = () => {
 };
 
 const generateAmbient = () => {
-  const count = 400;
+  const count = 350;
   const arr = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
     arr[i * 3] = (Math.random() - 0.5) * 15;
@@ -444,10 +426,16 @@ const AmbientParticles = () => {
   const texture = useMemo(() => createCircleTexture(), []);
   const positions = INITIAL_AMBIENT;
 
-  useFrame(() => {
+  useEffect(() => {
+    return () => {
+      if (texture) texture.dispose();
+    };
+  }, [texture]);
+
+  useFrame((_, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.0001;
-      pointsRef.current.rotation.x += 0.00005;
+      pointsRef.current.rotation.y += delta * 0.006;
+      pointsRef.current.rotation.x += delta * 0.003;
     }
   });
 
@@ -473,14 +461,15 @@ const AmbientParticles = () => {
 const generateAsteroids = (count) => {
   const temp = [];
   for (let i = 0; i < count; i++) {
-    const radius = 8 + Math.random() * 40; 
+    // Keep asteroids behind camera focal corridor so large chunks never clutter foreground text
+    const radius = 16 + Math.random() * 44;
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
-    
+
     const x = radius * Math.sin(phi) * Math.cos(theta);
     const y = radius * Math.sin(phi) * Math.sin(theta);
     const z = radius * Math.cos(phi);
-    
+
     temp.push({
       position: new THREE.Vector3(x, y, z),
       rotation: new THREE.Euler(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI),
@@ -488,18 +477,13 @@ const generateAsteroids = (count) => {
         Math.random() * 0.5 + 0.15,
         Math.random() * 0.5 + 0.15,
         Math.random() * 0.5 + 0.15
-      ),
-      speedRotation: new THREE.Euler(
-        (Math.random() - 0.5) * 0.01,
-        (Math.random() - 0.5) * 0.01,
-        (Math.random() - 0.5) * 0.01
       )
     });
   }
   return temp;
 };
 
-const INITIAL_ASTEROIDS = generateAsteroids(300);
+const INITIAL_ASTEROIDS = generateAsteroids(250);
 
 const Asteroids = () => {
   const meshRef = useRef();
@@ -521,7 +505,7 @@ const Asteroids = () => {
     }
   }, [asteroids, dummy]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const targetWarp = isWarping ? 1 : 0;
     warpSpeed.current = THREE.MathUtils.damp(warpSpeed.current, targetWarp, 4.5, delta);
 
@@ -534,9 +518,9 @@ const Asteroids = () => {
   return (
     <instancedMesh ref={meshRef} args={[null, null, INITIAL_ASTEROIDS.length]}>
       <dodecahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial 
-        color="#888888" 
-        roughness={0.8} 
+      <meshStandardMaterial
+        color="#4b5563"
+        roughness={0.85}
         metalness={0.2}
       />
     </instancedMesh>
@@ -579,7 +563,7 @@ const WarpStreaks = () => {
   const { isWarping } = useScroll();
   const warpAlpha = useRef(0);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const targetAlpha = isWarping ? 0.9 : 0;
     warpAlpha.current = THREE.MathUtils.damp(warpAlpha.current, targetAlpha, 5.0, delta);
 
@@ -591,7 +575,6 @@ const WarpStreaks = () => {
         const array = posAttr.array;
         const data = INITIAL_WARP_DATA.data;
 
-        // Animate each streak individually forward along Z without any jarring global modulo wrap
         for (let i = 0; i < WARP_COUNT; i++) {
           const item = data[i];
           item.z += delta * item.speed;
@@ -627,17 +610,22 @@ const WarpStreaks = () => {
 const CameraWarpController = () => {
   const { isWarping } = useScroll();
   const warpIntensity = useRef(0);
+  const lastFov = useRef(35);
   const defaultFov = 35;
 
   useFrame((state, delta) => {
     const targetWarp = isWarping ? 1 : 0;
-    // Smoother dampening curve for organic camera expansion and recovery
     warpIntensity.current = THREE.MathUtils.damp(warpIntensity.current, targetWarp, 4.0, delta);
 
-    const cam = state.camera;
-    if (cam && 'fov' in cam) {
-      cam.fov = defaultFov + warpIntensity.current * 18;
-      cam.updateProjectionMatrix();
+    const nextFov = defaultFov + warpIntensity.current * 18;
+    // Update projection matrix only when FOV actually changes (saves work when idle)
+    if (Math.abs(nextFov - lastFov.current) > 0.005) {
+      const cam = state.camera;
+      if (cam && 'fov' in cam) {
+        cam.fov = nextFov;
+        cam.updateProjectionMatrix();
+        lastFov.current = nextFov;
+      }
     }
   });
 
@@ -645,9 +633,8 @@ const CameraWarpController = () => {
 };
 
 const Hero3DCanvas = () => {
-  const pixelRatio = 1;
-
   const onCreated = ({ gl }) => {
+    gl.setClearColor(0x000000, 0);
     gl.domElement.addEventListener('webglcontextlost', (e) => {
       e.preventDefault();
       console.warn('WebGL context lost');
@@ -669,23 +656,17 @@ const Hero3DCanvas = () => {
         depth: true
       }}
       style={{ touchAction: 'none' }}
-      dpr={[1, pixelRatio]}
+      dpr={[1, 1.25]}
       onCreated={onCreated}
     >
-      <color attach="background" args={['#000000', 0]} />
       <fog attach="fog" args={['#000000', 50, 200]} />
 
-      <ambientLight color="#1a1a1a" intensity={0.4} />
+      {/* Consolidated high-contrast aerospace rim & fill lighting */}
+      <ambientLight color="#1a1a1a" intensity={0.45} />
       <directionalLight color="#ffffff" intensity={3.5} position={[15, 30, 15]} />
-      <directionalLight color="#ffffff" intensity={2.5} position={[-15, 25, -15]} />
-      <directionalLight color="#ffffff" intensity={2.0} position={[0, -25, 0]} />
-      <directionalLight color="#ffffff" intensity={1.5} position={[-15, -20, -15]} />
-      <hemisphereLight color="#ffffff" groundColor="#FF003C" intensity={0.1} />
-      <pointLight color="#ffffff" intensity={1.0} position={[12, 12, 12]} distance={60} decay={2} />
-      <pointLight color="#ffffff" intensity={0.8} position={[-12, 12, -12]} distance={60} decay={2} />
-      <pointLight color="#1a00ff" intensity={0.3} position={[0, 0, 20]} distance={50} decay={2} />
-      <pointLight color="#2a00ff" intensity={0.3} position={[0, 0, -20]} distance={50} decay={2} />
-      <directionalLight color="#ffffff" intensity={2.0} position={[0, 0, -30]} />
+      <directionalLight color="#ffffff" intensity={2.2} position={[-15, 20, -15]} />
+      <directionalLight color="#ffffff" intensity={1.8} position={[0, -25, -10]} />
+      <hemisphereLight color="#00E5FF" groundColor="#FF003C" intensity={0.25} />
 
       <CameraWarpController />
       <Starfield />
@@ -713,8 +694,8 @@ export const Hero3D = () => (
       className="absolute inset-0 pointer-events-none"
       style={{
         background: `
-          radial-gradient(circle at 15% 50%, rgba(20, 5, 40, 0.4) 0%, transparent 50%),
-          radial-gradient(circle at 85% 30%, rgba(5, 20, 40, 0.4) 0%, transparent 50%),
+          radial-gradient(circle at 15% 50%, rgba(20, 5, 40, 0.45) 0%, transparent 50%),
+          radial-gradient(circle at 85% 30%, rgba(5, 20, 40, 0.45) 0%, transparent 50%),
           linear-gradient(180deg, #010205 0%, #000000 100%)
         `
       }}

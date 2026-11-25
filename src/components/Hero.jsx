@@ -1,7 +1,14 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import FragmentedUsername from './FragmentedUsername';
+import { useScroll as useWarpScroll } from './ScrollContext';
+
+// Set to '/resume.pdf' (once added to public/) or an external hosted CV link
+const RESUME_URL = '';
+const CONTACT_EMAIL = 'prasun.oct27@gmail.com';
 
 const Hero = () => {
+  const { triggerWarp } = useWarpScroll();
+
   // Ultra-smooth spring physics: velvety 120fps motion without any mouse-wheel stutter or drag lag
   const { scrollY } = useScroll();
   const smoothScrollY = useSpring(scrollY, {
@@ -17,6 +24,11 @@ const Hero = () => {
 
   // Scroll indicator disappears quickly as soon as scrolling initiates
   const indicatorOpacity = useTransform(smoothScrollY, [0, 90], [1, 0]);
+
+  const handleWarpNavigation = (e, sectionId) => {
+    e.preventDefault();
+    triggerWarp(sectionId);
+  };
 
   return (
     <section
@@ -49,7 +61,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-8 md:mb-10 flex items-center gap-2 sm:gap-3 text-phosphor font-mono tracking-[0.25em] sm:tracking-[0.4em] text-[clamp(1.1rem,3.2vw,1.8rem)] uppercase font-bold"
+            className="mb-8 md:mb-10 flex items-center gap-1.5 sm:gap-3 text-phosphor font-heading tracking-[0.12em] sm:tracking-[0.26em] text-[clamp(0.82rem,3.5vw,1.65rem)] uppercase font-bold whitespace-nowrap"
           >
             <span className="text-target font-bold">[</span>
             <span>PRASUN KUMAR BISWAS</span>
@@ -65,8 +77,8 @@ const Hero = () => {
           className="max-w-4xl mx-auto text-phosphor/95 text-[clamp(0.95rem,2.8vw,1.4rem)] md:text-2xl mb-10 md:mb-14 leading-relaxed font-mono tracking-wide font-medium"
         >
           AEROSPACE ENGINEER // FULL-STACK DEVELOPER // AI SYSTEMS ARCHITECT
-          <span className="text-[clamp(0.75rem,2vw,1.05rem)] md:text-sm tracking-[0.35em] sm:tracking-[0.6em] text-sensor/90 mt-4 md:mt-6 block uppercase font-mono font-normal">
-            LAT: 20.2961° N // LONG: 85.8245° E
+          <span className="text-[clamp(0.75rem,2vw,1.05rem)] md:text-sm tracking-[0.28em] sm:tracking-[0.5em] text-sensor/90 mt-4 md:mt-6 block uppercase font-mono font-normal">
+            BHUBANESWAR, ODISHA, INDIA // 20.2961° N, 85.8245° E
           </span>
         </motion.p>
 
@@ -77,15 +89,33 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 1, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-12"
         >
-          <a href="#projects" className="btn-hud text-lg md:text-xl px-12 py-5 group min-w-[240px]">
+          <a
+            href="#projects"
+            onClick={(e) => handleWarpNavigation(e, 'projects')}
+            className="btn-hud bg-void/75 backdrop-blur-md text-lg md:text-xl px-12 py-5 group min-w-[240px]"
+          >
             <span className="group-hover:tracking-[0.25em] transition-all duration-500 font-bold">ENGAGE OPTICS</span>
           </a>
-          <a
-            href="/resume.pdf"
-            className="btn-hud text-lg md:text-xl px-12 py-5 !border-sensor/40 !text-phosphor group min-w-[240px] hover:!border-sensor hover:!text-sensor"
-          >
-            <span className="group-hover:tracking-[0.1em] transition-all duration-500 font-bold">SECURE_CV.PDF</span>
-          </a>
+
+          {RESUME_URL ? (
+            <a
+              href={RESUME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              download="Prasun_Kumar_Biswas_CV.pdf"
+              className="btn-hud bg-void/75 backdrop-blur-md text-lg md:text-xl px-12 py-5 !border-sensor/40 !text-phosphor group min-w-[240px] hover:!border-sensor hover:!text-sensor"
+            >
+              <span className="group-hover:tracking-[0.1em] transition-all duration-500 font-bold">SECURE_CV.PDF</span>
+            </a>
+          ) : (
+            <a
+              href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('CV / Resume Request — Prasun Kumar Biswas')}`}
+              aria-label="Request CV via email"
+              className="btn-hud bg-void/75 backdrop-blur-md text-lg md:text-xl px-12 py-5 !border-sensor/40 !text-phosphor group min-w-[240px] hover:!border-sensor hover:!text-sensor"
+            >
+              <span className="group-hover:tracking-[0.1em] transition-all duration-500 font-bold">REQUEST_CV</span>
+            </a>
+          )}
         </motion.div>
 
         {/* Scroll Down Indicator Animation */}
@@ -98,6 +128,7 @@ const Hero = () => {
         >
           <a
             href="#about"
+            onClick={(e) => handleWarpNavigation(e, 'about')}
             className="flex flex-col items-center gap-2 group cursor-pointer"
             aria-label="Scroll to About section"
           >

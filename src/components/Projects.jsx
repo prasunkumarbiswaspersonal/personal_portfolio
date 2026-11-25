@@ -15,7 +15,7 @@ const projectsData = [
     organizer: "Boeing India & KIIT-DU",
     institution: "Centurion University of Technology and Management (CUTM)",
     category: "Aerospace",
-    description: "Led Team Wingineers in the end-to-end aerodynamic design, structural prototyping, composite fabrication, and flight operations of a high-performance RC aircraft for the Boeing National Aeromodelling Competition. Represented Centurion University of Technology and Management (CUTM) at the national stage, optimizing wing loading, airfoil selection, and stability derivatives for mission success.",
+    description: "Led Team Wingineers at the Boeing National Aeromodelling Competition 2025-26 (KIIT Cricket Stadium, Bhubaneswar), representing Centurion University of Technology and Management (CUTM). Engineered, fabricated, and piloted a fixed-wing RC aircraft optimized for high payload-to-weight efficiency, CATIA structural strength, and precision flight stability.",
     tags: [
       "Aerodynamics",
       "RC Aircraft",
@@ -75,8 +75,8 @@ const Projects = () => {
           className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6"
         >
           <div className="group">
-            <h2 className="text-4xl md:text-5xl font-heading inline-flex items-center tracking-widest text-sensor">
-              <span className="text-target mr-4">03.</span> ACTIVE_OPERATIONS
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading flex flex-wrap items-center gap-y-1 tracking-wide md:tracking-widest text-sensor">
+              <span className="text-target mr-3 md:mr-4">03.</span> PROJECTS // ACTIVE OPS
             </h2>
             <div className="h-px bg-sensor/20 w-full max-w-lg mt-4 transition-all group-hover:max-w-xl group-hover:bg-target/40"></div>
           </div>

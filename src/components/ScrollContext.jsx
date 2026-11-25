@@ -1,54 +1,85 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useMotionValue } from 'framer-motion';
 
-const ScrollContext = createContext(null);
+const ScrollTelemetryContext = createContext(null);
+const ActiveNavContext = createContext(null);
+
 const SECTIONS = ['hero', 'about', 'skills', 'projects', 'contact'];
+const NAVBAR_HEIGHT = 80; // Matches Navbar h-20 (80px)
 
-// Custom ease-in-out cubic scroll animation for cinematic section transitions
+// Custom ease-in-out cubic scroll animation that cleanly yields on manual user input
 const smoothScrollToTarget = (targetY, duration = 850) => {
   const startY = window.scrollY;
   const distance = targetY - startY;
-  if (Math.abs(distance) < 2) return;
+  if (Math.abs(distance) < 2) return () => {};
+
   const startTime = performance.now();
+  let rafId = null;
+  let cancelled = false;
+
+  const cancel = () => {
+    if (cancelled) return;
+    cancelled = true;
+    if (rafId !== null) cancelAnimationFrame(rafId);
+    window.removeEventListener('wheel', cancel);
+    window.removeEventListener('touchstart', cancel);
+    window.removeEventListener('pointerdown', cancel);
+  };
+
+  window.addEventListener('wheel', cancel, { passive: true, once: true });
+  window.addEventListener('touchstart', cancel, { passive: true, once: true });
+  window.addEventListener('pointerdown', cancel, { passive: true, once: true });
 
   const step = (currentTime) => {
+    if (cancelled) return;
     const elapsed = (currentTime - startTime) / duration;
     if (elapsed >= 1) {
       window.scrollTo(0, targetY);
+      cancel();
       return;
     }
-    // High-performance ease-in-out cubic curve
     const ease = elapsed < 0.5
       ? 4 * elapsed * elapsed * elapsed
       : 1 - Math.pow(-2 * elapsed + 2, 3) / 2;
     window.scrollTo(0, startY + distance * ease);
-    requestAnimationFrame(step);
+    rafId = requestAnimationFrame(step);
   };
-  requestAnimationFrame(step);
+
+  rafId = requestAnimationFrame(step);
+  return cancel;
 };
 
 export const ScrollProvider = ({ children }) => {
   const [activeSection, setActiveSection] = useState('hero');
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [sectionProgress, setSectionProgress] = useState({});
+  const [scrollPercent, setScrollPercent] = useState(0);
   const [isWarping, setIsWarping] = useState(false);
+
+  const scrollProgressMV = useMotionValue(0);
+  const metricsRef = useRef({
+    scrollProgress: 0,
+    activeSection: 'hero',
+    sectionProgress: {}
+  });
   const warpTimeoutRef = useRef(null);
+  const cancelScrollRef = useRef(null);
+
+  const getScrollMetrics = useCallback(() => metricsRef.current, []);
 
   const triggerWarp = useCallback((targetSectionId) => {
     setIsWarping(true);
     if (warpTimeoutRef.current) clearTimeout(warpTimeoutRef.current);
+    if (cancelScrollRef.current) cancelScrollRef.current();
 
     if (targetSectionId) {
       const cleanId = targetSectionId.replace('#', '');
       const el = document.getElementById(cleanId);
       if (el) {
-        const navHeight = 72;
-        const targetPosition = Math.max(0, el.offsetTop - navHeight);
-        smoothScrollToTarget(targetPosition, 850);
+        const targetPosition = Math.max(0, el.offsetTop - NAVBAR_HEIGHT);
+        cancelScrollRef.current = smoothScrollToTarget(targetPosition, 850);
       }
     }
 
-    // Warp sequence duration in harmony with scroll curve
     warpTimeoutRef.current = setTimeout(() => {
       setIsWarping(false);
     }, 850);
@@ -59,7 +90,9 @@ export const ScrollProvider = ({ children }) => {
     const windowHeight = window.innerHeight;
     const documentHeight = Math.max(1, document.documentElement.scrollHeight - windowHeight);
     const totalProgress = Math.min(Math.max(0, scrollY / documentHeight), 1);
-    setScrollProgress(totalProgress);
+
+    // Update GPU-friendly MotionValue and ref directly (zero React re-renders for 3D scene)
+    scrollProgressMV.set(totalProgress);
 
     const sectionPositions = {};
     let currentActive = 'hero';
@@ -73,10 +106,9 @@ export const ScrollProvider = ({ children }) => {
         const elementHeight = rect.height;
         const sectionStart = elementTop - windowHeight * 0.3;
         const sectionEnd = elementTop + elementHeight - windowHeight * 0.7;
-        const progress = Math.max(0, Math.min(1, (scrollY - sectionStart) / (sectionEnd - sectionStart)));
-        sectionPositions[sectionId] = progress;
+        const denom = Math.max(1, sectionEnd - sectionStart);
+        sectionPositions[sectionId] = Math.max(0, Math.min(1, (scrollY - sectionStart) / denom));
 
-        // Viewport intersection calculation for accurate active section highlight
         const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
         if (visibleHeight > maxIntersection && visibleHeight > 0) {
           maxIntersection = visibleHeight;
@@ -85,9 +117,16 @@ export const ScrollProvider = ({ children }) => {
       }
     });
 
-    setActiveSection(currentActive);
-    setSectionProgress(sectionPositions);
-  }, []);
+    metricsRef.current = {
+      scrollProgress: totalProgress,
+      activeSection: currentActive,
+      sectionProgress: sectionPositions
+    };
+
+    const nextPercent = Math.round(totalProgress * 100);
+    setActiveSection((prev) => (prev === currentActive ? prev : currentActive));
+    setScrollPercent((prev) => (prev === nextPercent ? prev : nextPercent));
+  }, [scrollProgressMV]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -96,20 +135,41 @@ export const ScrollProvider = ({ children }) => {
       cancelAnimationFrame(raf);
       window.removeEventListener('scroll', handleScroll);
       if (warpTimeoutRef.current) clearTimeout(warpTimeoutRef.current);
+      if (cancelScrollRef.current) cancelScrollRef.current();
     };
   }, [handleScroll]);
 
+  const telemetryValue = useMemo(
+    () => ({ isWarping, triggerWarp, getScrollMetrics, scrollProgressMV }),
+    [isWarping, triggerWarp, getScrollMetrics, scrollProgressMV]
+  );
+
+  const navValue = useMemo(
+    () => ({ activeSection, scrollPercent }),
+    [activeSection, scrollPercent]
+  );
+
   return (
-    <ScrollContext.Provider value={{ activeSection, scrollProgress, sectionProgress, isWarping, triggerWarp }}>
-      {children}
-    </ScrollContext.Provider>
+    <ScrollTelemetryContext.Provider value={telemetryValue}>
+      <ActiveNavContext.Provider value={navValue}>
+        {children}
+      </ActiveNavContext.Provider>
+    </ScrollTelemetryContext.Provider>
   );
 };
 
 export const useScroll = () => {
-  const context = useContext(ScrollContext);
+  const context = useContext(ScrollTelemetryContext);
   if (!context) {
     throw new Error('useScroll must be used within a ScrollProvider');
+  }
+  return context;
+};
+
+export const useActiveNav = () => {
+  const context = useContext(ActiveNavContext);
+  if (!context) {
+    throw new Error('useActiveNav must be used within a ScrollProvider');
   }
   return context;
 };

@@ -62,7 +62,7 @@ const NanoShard = ({ shard, smoothScrollY, isAccent }) => {
         opacity: sOpacity,
         width: `${shard.w}px`,
         height: `${shard.h}px`,
-        transformZ: 0
+        z: 0
       }}
       className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none ${
         isAccent ? 'bg-target shadow-[0_0_8px_#FF003C]' : 'bg-sensor shadow-[0_0_10px_#00E5FF]'
@@ -103,7 +103,7 @@ const FragmentedChar = ({ glyph, smoothScrollY }) => {
   const effectiveWidth = glyph.isSmallcase ? Math.round(glyph.advanceWidth * 0.82) : glyph.advanceWidth;
 
   return (
-    <div className={`relative inline-block select-none overflow-visible h-[clamp(3.5rem,13vw,8.5rem)] ${glowShadow}`}>
+    <div className={`relative inline-block select-none overflow-visible h-[clamp(2.4rem,10.5vw,8.5rem)] ${glowShadow}`}>
       {/* Invisible placeholder for natural layout spacing */}
       <svg
         viewBox={`0 0 ${effectiveWidth} 800`}
@@ -124,7 +124,7 @@ const FragmentedChar = ({ glyph, smoothScrollY }) => {
           rotate: p0Rot,
           scale: p0Scale,
           opacity: pieceOpacity,
-          transformZ: 0
+          z: 0
         }}
         className={`absolute inset-0 pointer-events-none will-change-transform ${colorClass}`}
       >
@@ -147,7 +147,7 @@ const FragmentedChar = ({ glyph, smoothScrollY }) => {
           rotate: p1Rot,
           scale: p1Scale,
           opacity: pieceOpacity,
-          transformZ: 0
+          z: 0
         }}
         className={`absolute inset-0 pointer-events-none will-change-transform ${colorClass}`}
       >
@@ -178,7 +178,7 @@ const FragmentedChar = ({ glyph, smoothScrollY }) => {
 export const FragmentedUsername = ({ scrollY }) => {
   return (
     <div className="relative inline-flex items-center justify-center gap-[2px] md:gap-1 mb-3 md:mb-5 overflow-visible">
-      <h1 className="sr-only">0xPRASUN</h1>
+      <h1 className="sr-only">Prasun Kumar Biswas (0xPRASUN) — Aerospace Engineer, Full-Stack Developer &amp; AI Systems Architect</h1>
       <div className="flex items-center justify-center tracking-wide leading-none overflow-visible" aria-hidden="true">
         {GLYPHS.map((glyph) => (
           <FragmentedChar

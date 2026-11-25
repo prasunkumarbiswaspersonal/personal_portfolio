@@ -27,14 +27,21 @@ const ProjectCard = ({ project, onOpenModal }) => {
 
   return (
     <>
-      <div className="target-box liquid-glass p-6 md:p-8 rounded-none border border-sensor/30 hover:border-sensor/60 transition-all flex flex-col lg:flex-row gap-8 lg:gap-10">
+      <div className="hud-frame liquid-glass p-6 md:p-8 rounded-none border border-sensor/30 hover:border-sensor/60 transition-colors flex flex-col lg:flex-row gap-8 lg:gap-10">
         {/* Left: Interactive Multi-Image Gallery */}
         <div className="w-full lg:w-1/2 flex flex-col">
           {/* Main Image Container */}
           <div
-            className="relative aspect-[16/10] overflow-hidden border border-sensor/30 group cursor-pointer bg-void/80"
-            onClick={handleOpenImage}
+            className="relative aspect-[16/10] overflow-hidden border border-sensor/30 group bg-void/80"
           >
+            {/* Clickable backdrop trigger for expanding active photo */}
+            <button
+              type="button"
+              onClick={handleOpenImage}
+              aria-label={`Expand ${currentImage?.title || project.title} in full mode`}
+              className="absolute inset-0 z-10 w-full h-full cursor-pointer bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sensor"
+            />
+
             {/* Scanline & refraction HUD overlay */}
             <div className="absolute inset-0 bg-sensor/5 group-hover:bg-target/5 transition-colors duration-500 z-10 pointer-events-none" />
 
@@ -48,12 +55,14 @@ const ProjectCard = ({ project, onOpenModal }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-700 pointer-events-none"
               />
             </AnimatePresence>
 
             {/* Top HUD Badges */}
-            <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
+            <div className="absolute top-3 left-3 z-20 flex items-center gap-2 pointer-events-none">
               <span className="font-mono text-xs bg-void/90 text-sensor border border-sensor/40 px-2.5 py-1 tracking-wider uppercase font-semibold">
                 {currentImage?.tag || `IMG_0${activeImageIndex + 1}/0${images.length}`}
               </span>
@@ -72,13 +81,13 @@ const ProjectCard = ({ project, onOpenModal }) => {
               </button>
             </div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows (always visible on mobile touch, hover-reveal on md+) */}
             {images.length > 1 && (
               <>
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-void/85 text-sensor hover:text-target border border-sensor/30 hover:border-target transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-void/85 text-sensor hover:text-target border border-sensor/30 hover:border-target transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -86,7 +95,7 @@ const ProjectCard = ({ project, onOpenModal }) => {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-void/85 text-sensor hover:text-target border border-sensor/30 hover:border-target transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-void/85 text-sensor hover:text-target border border-sensor/30 hover:border-target transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
                   aria-label="Next image"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -95,7 +104,7 @@ const ProjectCard = ({ project, onOpenModal }) => {
             )}
 
             {/* Bottom Caption Pill */}
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-void via-void/85 to-transparent p-3 pt-8 z-20 flex justify-between items-end gap-2">
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-void via-void/85 to-transparent p-3 pt-8 z-20 flex justify-between items-end gap-2 pointer-events-none">
               <div className="min-w-0 flex-1">
                 <p className="text-xs md:text-sm font-mono text-white font-bold truncate">
                   {currentImage?.title}
@@ -107,7 +116,7 @@ const ProjectCard = ({ project, onOpenModal }) => {
               <button
                 type="button"
                 onClick={handleOpenImage}
-                className="text-[10px] font-mono text-target hover:text-sensor uppercase tracking-widest flex-shrink-0 font-bold transition-colors"
+                className="pointer-events-auto text-[10px] font-mono text-target hover:text-sensor uppercase tracking-widest flex-shrink-0 font-bold transition-colors"
               >
                 EXPAND IMAGE ↗
               </button>
@@ -124,17 +133,20 @@ const ProjectCard = ({ project, onOpenModal }) => {
                   e.stopPropagation();
                   setActiveImageIndex(idx);
                 }}
+                aria-pressed={activeImageIndex === idx}
                 className={`relative aspect-[16/10] overflow-hidden border transition-all duration-300 text-left ${
                   activeImageIndex === idx
                     ? 'border-target shadow-[0_0_12px_rgba(255,0,60,0.6)] scale-[1.03]'
                     : 'border-sensor/30 opacity-60 hover:opacity-100 hover:border-sensor hover:scale-[1.01]'
                 }`}
-                aria-label={`Select image ${idx + 1}`}
+                aria-label={`Select image ${idx + 1}: ${img.title}`}
               >
                 <img
                   src={img.src}
                   alt={img.title || `Thumbnail ${idx + 1}`}
-                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-[center_30%]"
                 />
                 <div className="absolute bottom-0 inset-x-0 bg-void/85 px-1 py-0.5 flex justify-between items-center text-[9px] font-mono">
                   <span className="text-target font-bold">0{idx + 1}</span>
@@ -150,8 +162,8 @@ const ProjectCard = ({ project, onOpenModal }) => {
           <div>
             {/* Mission Subtitle & Venue */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono uppercase bg-target/10 text-target border border-target/40 font-bold tracking-wider">
-                <Award className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono uppercase bg-target/20 text-rose-100 border border-target/70 font-bold tracking-wider">
+                <Award className="w-3.5 h-3.5 text-target" />
                 {project.event || 'BOEING NATIONAL SPRINT'}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-mono text-sensor/90">
@@ -162,16 +174,13 @@ const ProjectCard = ({ project, onOpenModal }) => {
 
             {/* Project Title */}
             <div className="flex justify-between items-start gap-4 mb-3">
-              <h3
-                onClick={onOpenModal}
-                className="font-heading text-2xl md:text-3xl text-white hover:text-target transition-colors tracking-wider break-words cursor-pointer"
-              >
+              <h3 className="font-heading text-xl sm:text-2xl md:text-3xl text-white tracking-wider break-words">
                 {project.title.toUpperCase()}
               </h3>
               <button
                 type="button"
                 onClick={onOpenModal}
-                className="p-1 hover:text-target text-sensor transition-colors flex-shrink-0 mt-1"
+                className="p-1.5 hover:text-target text-sensor border border-transparent hover:border-target/40 transition-colors flex-shrink-0 mt-1"
                 aria-label="Open detailed mission log"
               >
                 <ArrowUpRight className="w-6 h-6" />
@@ -179,7 +188,7 @@ const ProjectCard = ({ project, onOpenModal }) => {
             </div>
 
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm font-mono text-sensor font-medium mb-4 tracking-wide">
-              <span className="text-target font-bold">[LEADERSHIP]</span>
+              <span className="text-rose-400 font-bold">[LEADERSHIP]</span>
               <span>{project.role}</span>
               <span className="text-phosphor/40">|</span>
               <span className="text-phosphor/80">CUTM Aerospace</span>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -12,18 +12,31 @@ const ImageLightbox = ({
   onIndexChange
 }) => {
   const currentImage = images[currentIndex] || images[0];
+  const dialogRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const previousFocusRef = useRef(null);
 
-  // Lock background scroll strictly when lightbox is open
+  // Lock background scroll & restore focus on open/close
   useEffect(() => {
     if (!isOpen) return;
 
+    previousFocusRef.current = document.activeElement;
     lockScroll();
+
+    const focusTimer = requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
+
     return () => {
+      cancelAnimationFrame(focusTimer);
       unlockScroll();
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+        previousFocusRef.current.focus();
+      }
     };
   }, [isOpen]);
 
-  // Separate effect for keyboard listeners
+  // Separate effect for keyboard navigation & focus trap
   useEffect(() => {
     if (!isOpen) return;
 
@@ -37,6 +50,20 @@ const ImageLightbox = ({
       } else if (e.key === 'ArrowRight' && images.length > 1) {
         if (onIndexChange) {
           onIndexChange(currentIndex === images.length - 1 ? 0 : currentIndex + 1);
+        }
+      } else if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll(
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
         }
       }
     };
@@ -75,12 +102,16 @@ const ImageLightbox = ({
           onWheel={(e) => e.stopPropagation()}
         >
           <motion.div
+            ref={dialogRef}
             key="lightbox-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="lightbox-dialog-title"
             initial={{ opacity: 0, scale: 0.94, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 15 }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="relative max-w-5xl w-full bg-[#030914] border border-sensor/50 shadow-[0_0_50px_rgba(0,229,255,0.25)] flex flex-col target-box overflow-hidden overscroll-contain"
+            className="relative max-w-5xl w-full bg-[#030914] border border-sensor/50 shadow-[0_0_50px_rgba(0,229,255,0.25)] flex flex-col hud-frame overflow-hidden overscroll-contain"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Bar INSIDE the Pop-up with Title & Close Button */}
@@ -93,6 +124,7 @@ const ImageLightbox = ({
               </div>
 
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={onClose}
                 className="p-1.5 bg-void text-phosphor hover:text-target border border-sensor/30 hover:border-target transition-colors flex-shrink-0 flex items-center justify-center"
@@ -143,7 +175,7 @@ const ImageLightbox = ({
             {/* Caption Footer */}
             <div className="p-4 bg-[#020610] border-t border-sensor/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-sm sm:text-base font-mono text-white font-bold mb-0.5">
+                <p id="lightbox-dialog-title" className="text-sm sm:text-base font-mono text-white font-bold mb-0.5">
                   {currentImage.title}
                 </p>
                 <p className="text-xs sm:text-sm font-mono text-phosphor/85 leading-relaxed">

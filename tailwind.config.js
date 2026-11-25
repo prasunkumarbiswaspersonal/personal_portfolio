@@ -9,6 +9,7 @@ export default {
       colors: {
         void: '#000000',
         optical: '#050505',
+        surface: '#030914',  // HUD Translucent Panel Base
         phosphor: '#E2E8F0', // Crisp Aerospace HUD White / Silver
         project: '#F8FAFC',  // Clean High-Contrast Display White
         target: '#FF003C',   // Aerospace Target Red
@@ -16,10 +17,9 @@ export default {
         sensor: '#00E5FF'    // Luminous HUD Cyan
       },
       fontFamily: {
-        sans: ['Share Tech Mono', 'monospace'],
-        heading: ['Michroma', 'sans-serif'],
-        mono: ['Share Tech Mono', 'monospace'],
-        origin: ['OriginTech', 'Michroma', 'sans-serif'],
+        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        heading: ['"Orbitron"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
         powershell: ['"Cascadia Code"', 'Consolas', '"Lucida Console"', '"Courier New"', 'monospace'],
       },
       cursor: {
@@ -29,4 +29,3 @@ export default {
   },
   plugins: [],
 }
-

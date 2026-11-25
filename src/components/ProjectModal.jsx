@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Calendar, MapPin, Award, CheckCircle2, Users } from 'lucide-react';
 import ImageLightbox from './ImageLightbox';
 import { lockScroll, unlockScroll } from './scrollLock';
+import { useScroll } from './ScrollContext';
 
 const BOEING_DETAILS = {
   title: "Boeing National Aeromodelling Competition",
@@ -62,32 +63,67 @@ const BOEING_DETAILS = {
 
 const ProjectModal = ({ project, isOpen, onClose }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+  const { triggerWarp } = useScroll();
+  const dialogRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const previousFocusRef = useRef(null);
 
   const handleClose = useCallback(() => {
     setSelectedImageIndex(null);
     onClose();
   }, [onClose]);
 
-  // Lock background scroll strictly while ProjectModal is open
+  const handleNavigateContact = (e) => {
+    e.preventDefault();
+    handleClose();
+    // Wait for modal close & scroll unlock cleanup before triggering warp scroll
+    setTimeout(() => {
+      triggerWarp('contact');
+    }, 60);
+  };
+
+  // Lock background scroll & restore focus cleanly when ProjectModal opens/closes
   useEffect(() => {
     if (!isOpen) return;
 
+    previousFocusRef.current = document.activeElement;
     lockScroll();
+
+    const focusTimer = requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
+
     return () => {
+      cancelAnimationFrame(focusTimer);
       unlockScroll();
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+        previousFocusRef.current.focus();
+      }
     };
   }, [isOpen]);
 
-  // Keyboard navigation
+  // Keyboard navigation & focus trap (yields to ImageLightbox when open)
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e) => {
+      if (selectedImageIndex !== null) return;
+
       if (e.key === 'Escape') {
-        if (selectedImageIndex !== null) {
-          setSelectedImageIndex(null);
-        } else {
-          handleClose();
+        handleClose();
+      } else if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll(
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
         }
       }
     };
@@ -109,16 +145,20 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overscroll-contain"
+          className="fixed inset-0 z-[80] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overscroll-contain"
           onClick={handleClose}
           onWheel={(e) => e.stopPropagation()}
         >
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
             initial={{ opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 16 }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-[#030914] border border-sensor/40 rounded-none max-w-5xl w-full max-h-[92vh] overflow-y-auto overscroll-contain shadow-[0_0_40px_rgba(0,229,255,0.15)] relative target-box"
+            className="bg-[#030914] border border-sensor/40 rounded-none max-w-5xl w-full max-h-[92vh] overflow-y-auto overscroll-contain shadow-[0_0_40px_rgba(0,229,255,0.15)] relative hud-frame"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header Bar */}
@@ -130,6 +170,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                 </span>
               </div>
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={handleClose}
                 className="p-1.5 bg-void text-phosphor hover:text-target border border-sensor/30 hover:border-target transition-colors"
@@ -143,8 +184,8 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
               {/* Title & Metadata Banner */}
               <div className="mb-8">
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono uppercase bg-target/15 text-target border border-target/50 font-bold">
-                    <Award className="w-4 h-4" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono uppercase bg-target/20 text-rose-100 border border-target/70 font-bold">
+                    <Award className="w-4 h-4 text-target" />
                     BOEING NATIONAL AEROMODELLING COMPETITION 2025-26
                   </span>
                   <span className="inline-flex items-center gap-1 text-xs font-mono text-sensor bg-sensor/5 px-3 py-1 border border-sensor/30">
@@ -161,7 +202,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                   </span>
                 </div>
 
-                <h2 className="text-3xl md:text-4xl font-heading text-white mb-2 tracking-wide">
+                <h2 id="project-modal-title" className="text-3xl md:text-4xl font-heading text-white mb-2 tracking-wide">
                   {details.title.toUpperCase()}
                 </h2>
                 <h3 className="text-lg md:text-xl text-sensor font-mono mb-4 tracking-wider">
@@ -239,16 +280,20 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {details.images.map((image, index) => (
-                    <div
+                    <button
                       key={index}
-                      className="group relative border border-sensor/20 hover:border-sensor/60 bg-void/80 overflow-hidden transition-all cursor-pointer"
+                      type="button"
+                      className="group relative border border-sensor/20 hover:border-sensor/60 bg-void/80 overflow-hidden transition-all text-left w-full"
                       onClick={() => setSelectedImageIndex(index)}
+                      aria-label={`Inspect photo ${index + 1}: ${image.title}`}
                     >
                       <div className="aspect-[16/10] overflow-hidden bg-void relative">
                         <img
                           src={image.src}
                           alt={image.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute top-2 right-2 px-2 py-0.5 bg-void/90 text-[10px] font-mono text-sensor border border-sensor/30 font-bold">
                           {image.tag}
@@ -262,7 +307,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                           {image.desc}
                         </p>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -280,7 +325,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
               <div className="border-t border-sensor/20 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <a
                   href="#contact"
-                  onClick={handleClose}
+                  onClick={handleNavigateContact}
                   className="btn-hud inline-flex items-center gap-2 text-sm md:text-base px-6 py-2.5 font-bold"
                 >
                   <ExternalLink className="h-4 w-4" />
