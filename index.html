@@ -22,13 +22,31 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- Preconnect & non-blocking font loading -->
+    <!-- Critical base paint styles to avoid blank FCP flash -->
+    <style>
+      html, body { background-color: #000000; color: #E2E8F0; margin: 0; overflow-x: hidden; }
+    </style>
+
+    <!-- Non-blocking preconnect + async font load (removes 780ms mobile render-blocking waterfall) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
@@ -129,10 +147,10 @@
             "description": "Led Team Wingineers in designing, manufacturing, and piloting a competitive fixed-wing RC aircraft for the Boeing National Aeromodelling Competition at KIIT Cricket Stadium, Bhubaneswar, representing CUTM Aerospace.",
             "author": { "@id": "https://www.prasunbiswas.qzz.io/#person" },
             "image": [
-              "https://www.prasunbiswas.qzz.io/images/projects/boeing-wingineers.jpg",
-              "https://www.prasunbiswas.qzz.io/images/projects/boeing-cutm-team.jpg",
-              "https://www.prasunbiswas.qzz.io/images/projects/boeing-group.jpg",
-              "https://www.prasunbiswas.qzz.io/images/projects/boeing-banner.jpg"
+              "https://www.prasunbiswas.qzz.io/images/projects/boeing-wingineers.webp",
+              "https://www.prasunbiswas.qzz.io/images/projects/boeing-cutm-team.webp",
+              "https://www.prasunbiswas.qzz.io/images/projects/boeing-group.webp",
+              "https://www.prasunbiswas.qzz.io/images/projects/boeing-banner.webp"
             ],
             "keywords": "Boeing National Aeromodelling Competition, Team Wingineers, RC Aircraft, Aerodynamics, CUTM Aerospace",
             "locationCreated": {
@@ -143,13 +161,13 @@
         ]
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-BoqXGLMR.js"></script>
+    <script type="module" crossorigin src="/assets/index-BjdC4ZLZ.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-Cyuzqnbw.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-B3rv2cpF.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-framer-BEDne7hd.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-4srZVsfa.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-react-RQ5za_QO.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-ZFkpA88w.css">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-CsfVVwuv.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-framer-DzMkPQbu.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-p9wKFla0.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-CTtO14Lu.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-CQiV1WWZ.css">
   </head>
   <body>
     <div id="root"></div>
