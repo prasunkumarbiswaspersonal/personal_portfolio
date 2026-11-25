@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://www.prasunbiswas.qzz.io/</loc>
+    <lastmod>2026-11-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.prasunbiswas.qzz.io/og-image.png</image:loc>
+      <image:title>Prasun Kumar Biswas — Aerospace, Hardware &amp; AI Engineer Portfolio</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.prasunbiswas.qzz.io/images/projects/boeing-wingineers.jpg</image:loc>
+      <image:title>Team Wingineers RC Aircraft — Boeing National Aeromodelling Competition</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.prasunbiswas.qzz.io/images/projects/boeing-cutm-team.jpg</image:loc>
+      <image:title>CUTM Aerospace Delegation — Boeing National Aeromodelling Competition</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.prasunbiswas.qzz.io/images/projects/boeing-group.jpg</image:loc>
+      <image:title>Squad Celebration — Boeing National Aeromodelling Competition</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.prasunbiswas.qzz.io/images/projects/boeing-banner.jpg</image:loc>
+      <image:title>Boeing National Aeromodelling Competition 2025-26 Arena at KIIT Cricket Stadium</image:title>
+    </image:image>
+  </url>
+</urlset>
+
